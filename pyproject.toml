@@ -1,0 +1,75 @@
+[project]
+name = "hyperscope"
+version = "0.1.0"
+description = ""
+authors = [{name = "Mohit Nalavadi"}]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "black",
+    "jupyter>=1.1.1",
+    "notebook>=7.5.1",
+    "pandas>=2.3.3",
+    "ruff>=0.14.10",
+    "isort>=7.0.0",
+    "typer>=0.9.0",
+    "gphoto2>=2.6.3",
+    "rich>=14.3.3",
+    "opencv-python>=4.13.0.92",
+    "numpy>=2.4.3",
+]
+
+[tool.config]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "vulture>=2.16",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[project.scripts]
+config = "src.config:main"
+
+[tool.black]
+line-length = 110
+target-version = ['py312']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[tool.isort]
+force_single_line = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-s -v --cov=. --cov-report=term-missing"
+
+[tool.coverage.run]
+omit = ["tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.uv]
+exclude-newer = "1 week"

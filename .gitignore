@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Testing
+.pytest_cache/
+.hypothesis/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+.ipython/
+.jupyter/
+
+# IDEs and editors
+.vscode/
+.idea/
+.cursor/
+.claude/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+._*
+Thumbs.db
+
+# Secrets and credentials
+.env
+.env.local
+*.pem
+*.key
+secrets/
+
+# Images (calibration/output data is tracked explicitly, see README)
+*.jpg
+*.jpeg
+*.JPG
+*.JPEG
+*.png
+*.PNG
+*.gif
+*.bmp
+*.tiff
+*.tif
+*.webp
+
+# Video
+*.mp4
+*.avi
+*.mov
+
+# Project-specific
+media/
+cache/
