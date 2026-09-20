@@ -1,0 +1,416 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1320" viewBox="0 0 1500 1320"><rect width="1500" height="1320" fill="#fafafa"/><rect x="470" y="120" width="250" height="420" rx="10" fill="#1e1e1e" stroke="#000" stroke-width="2"/>
+<text x="595.0" y="144" font-size="15" text-anchor="middle" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">ESP32 DevKit  (HW-394)</text>
+<rect x="573.0" y="528" width="44" height="26" rx="8" fill="#9a9a9a" stroke="#444" stroke-width="2"/>
+<text x="595.0" y="546" font-size="9" text-anchor="middle" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">USB-C</text>
+<rect x="525" y="162" width="140" height="168" rx="4" fill="#b8b8b8" stroke="#666" stroke-width="2"/>
+<text x="595.0" y="252" font-size="11" text-anchor="middle" font-weight="normal" fill="#333" font-family="Helvetica, Arial, sans-serif">ESP32-WROOM-32</text>
+<text x="518" y="532" font-size="8" text-anchor="middle" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">EN (reset)</text>
+<text x="672" y="532" font-size="8" text-anchor="middle" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">BOOT</text>
+<circle cx="484" cy="170" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="170" r="2.2" fill="#222"/>
+<text x="498" y="174" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">EN</text>
+<circle cx="484" cy="194" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="194" r="2.2" fill="#222"/>
+<text x="498" y="198" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">VP</text>
+<circle cx="484" cy="218" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="218" r="2.2" fill="#222"/>
+<text x="498" y="222" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">VN</text>
+<circle cx="484" cy="242" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="242" r="2.2" fill="#222"/>
+<text x="498" y="246" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D34</text>
+<circle cx="484" cy="266" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="266" r="2.2" fill="#222"/>
+<text x="498" y="270" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D35</text>
+<circle cx="484" cy="290" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="290" r="2.2" fill="#222"/>
+<text x="498" y="294" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D32</text>
+<circle cx="484" cy="314" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="314" r="2.2" fill="#222"/>
+<text x="498" y="318" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D33</text>
+<circle cx="484" cy="338" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="338" r="2.2" fill="#222"/>
+<text x="498" y="342" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D25</text>
+<circle cx="484" cy="362" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="362" r="2.2" fill="#222"/>
+<text x="498" y="366" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D26</text>
+<circle cx="484" cy="386" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="386" r="2.2" fill="#222"/>
+<text x="498" y="390" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D27</text>
+<circle cx="484" cy="410" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="410" r="2.2" fill="#222"/>
+<text x="498" y="414" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D14</text>
+<circle cx="484" cy="434" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="434" r="2.2" fill="#222"/>
+<text x="498" y="438" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D12</text>
+<circle cx="484" cy="458" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="458" r="2.2" fill="#222"/>
+<text x="498" y="462" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D13</text>
+<circle cx="484" cy="482" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="482" r="2.2" fill="#222"/>
+<text x="498" y="486" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<circle cx="484" cy="506" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="506" r="2.2" fill="#222"/>
+<text x="498" y="510" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">VIN</text>
+<circle cx="706" cy="170" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="170" r="2.2" fill="#222"/>
+<text x="692" y="174" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D23</text>
+<circle cx="706" cy="194" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="194" r="2.2" fill="#222"/>
+<text x="692" y="198" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D22</text>
+<circle cx="706" cy="218" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="218" r="2.2" fill="#222"/>
+<text x="692" y="222" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">TX0</text>
+<circle cx="706" cy="242" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="242" r="2.2" fill="#222"/>
+<text x="692" y="246" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">RX0</text>
+<circle cx="706" cy="266" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="266" r="2.2" fill="#222"/>
+<text x="692" y="270" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D21</text>
+<circle cx="706" cy="290" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="290" r="2.2" fill="#222"/>
+<text x="692" y="294" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D19</text>
+<circle cx="706" cy="314" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="314" r="2.2" fill="#222"/>
+<text x="692" y="318" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D18</text>
+<circle cx="706" cy="338" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="338" r="2.2" fill="#222"/>
+<text x="692" y="342" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D5</text>
+<circle cx="706" cy="362" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="362" r="2.2" fill="#222"/>
+<text x="692" y="366" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">D17</text>
+<circle cx="706" cy="386" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="386" r="2.2" fill="#222"/>
+<text x="692" y="390" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D16</text>
+<circle cx="706" cy="410" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="410" r="2.2" fill="#222"/>
+<text x="692" y="414" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D4</text>
+<circle cx="706" cy="434" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="434" r="2.2" fill="#222"/>
+<text x="692" y="438" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D2</text>
+<circle cx="706" cy="458" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="458" r="2.2" fill="#222"/>
+<text x="692" y="462" font-size="11" text-anchor="end" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">D15</text>
+<circle cx="706" cy="482" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="482" r="2.2" fill="#222"/>
+<text x="692" y="486" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<circle cx="706" cy="506" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="706" cy="506" r="2.2" fill="#222"/>
+<text x="692" y="510" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">3V3</text>
+<rect x="950" y="130" width="170" height="250" rx="10" fill="#1e1e1e" stroke="#000" stroke-width="2"/>
+<text x="1035.0" y="154" font-size="15" text-anchor="middle" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">TMC2209 V1.3  (X)</text>
+<text x="1035.0" y="396" font-size="10" text-anchor="middle" font-weight="bold" fill="#444" font-family="Helvetica, Arial, sans-serif">UART address 0</text>
+<rect x="995" y="225" width="80" height="110" rx="3" fill="#2f5fd6" stroke="#1a3a8a" stroke-width="2" opacity="0.85"/>
+<line x1="995" y1="235" x2="1075" y2="235" stroke="#1a3a8a" stroke-width="2"/>
+<line x1="995" y1="261" x2="1075" y2="261" stroke="#1a3a8a" stroke-width="2"/>
+<line x1="995" y1="287" x2="1075" y2="287" stroke="#1a3a8a" stroke-width="2"/>
+<line x1="995" y1="313" x2="1075" y2="313" stroke="#1a3a8a" stroke-width="2"/>
+<circle cx="1068" cy="180" r="11" fill="#ddd" stroke="#555" stroke-width="2"/>
+<line x1="1060" y1="172" x2="1076" y2="188" stroke="#555" stroke-width="2"/>
+<line x1="982" y1="184" x2="994" y2="196" stroke="#c0392b" stroke-width="3"/>
+<line x1="982" y1="196" x2="994" y2="184" stroke="#c0392b" stroke-width="3"/>
+<text x="988" y="176" font-size="8" text-anchor="middle" font-weight="normal" fill="#c0392b" font-family="Helvetica, Arial, sans-serif" transform="rotate(-60 988 176)">DIAG</text>
+<line x1="1006" y1="184" x2="1018" y2="196" stroke="#c0392b" stroke-width="3"/>
+<line x1="1006" y1="196" x2="1018" y2="184" stroke="#c0392b" stroke-width="3"/>
+<text x="1012" y="176" font-size="8" text-anchor="middle" font-weight="normal" fill="#c0392b" font-family="Helvetica, Arial, sans-serif" transform="rotate(-60 1012 176)">INDEX</text>
+<circle cx="964" cy="190" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="190" r="2.2" fill="#222"/>
+<text x="978" y="194" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">EN</text>
+<circle cx="964" cy="214" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="214" r="2.2" fill="#222"/>
+<text x="978" y="218" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">MS1</text>
+<circle cx="964" cy="238" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="238" r="2.2" fill="#222"/>
+<text x="978" y="242" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">MS2</text>
+<circle cx="964" cy="262" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="262" r="2.2" fill="#222"/>
+<text x="978" y="266" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">UART</text>
+<circle cx="964" cy="286" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="286" r="2.2" fill="#222"/>
+<text x="978" y="290" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">PDN</text>
+<circle cx="964" cy="310" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="310" r="2.2" fill="#222"/>
+<text x="978" y="314" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">CLK</text>
+<circle cx="964" cy="334" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="334" r="2.2" fill="#222"/>
+<text x="978" y="338" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">STEP</text>
+<circle cx="964" cy="358" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="358" r="2.2" fill="#222"/>
+<text x="978" y="362" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">DIR</text>
+<circle cx="1106" cy="190" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="190" r="2.2" fill="#222"/>
+<text x="1092" y="194" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">VS</text>
+<circle cx="1106" cy="214" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="214" r="2.2" fill="#222"/>
+<text x="1092" y="218" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<circle cx="1106" cy="238" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="238" r="2.2" fill="#222"/>
+<text x="1092" y="242" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">A2</text>
+<circle cx="1106" cy="262" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="262" r="2.2" fill="#222"/>
+<text x="1092" y="266" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">A1</text>
+<circle cx="1106" cy="286" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="286" r="2.2" fill="#222"/>
+<text x="1092" y="290" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">B1</text>
+<circle cx="1106" cy="310" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="310" r="2.2" fill="#222"/>
+<text x="1092" y="314" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">B2</text>
+<circle cx="1106" cy="334" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="334" r="2.2" fill="#222"/>
+<text x="1092" y="338" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">VIO</text>
+<circle cx="1106" cy="358" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="358" r="2.2" fill="#222"/>
+<text x="1092" y="362" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<rect x="950" y="480" width="170" height="250" rx="10" fill="#1e1e1e" stroke="#000" stroke-width="2"/>
+<text x="1035.0" y="504" font-size="15" text-anchor="middle" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">TMC2209 V1.3  (Y)</text>
+<text x="1035.0" y="746" font-size="10" text-anchor="middle" font-weight="bold" fill="#444" font-family="Helvetica, Arial, sans-serif">UART address 1</text>
+<rect x="995" y="575" width="80" height="110" rx="3" fill="#2f5fd6" stroke="#1a3a8a" stroke-width="2" opacity="0.85"/>
+<line x1="995" y1="585" x2="1075" y2="585" stroke="#1a3a8a" stroke-width="2"/>
+<line x1="995" y1="611" x2="1075" y2="611" stroke="#1a3a8a" stroke-width="2"/>
+<line x1="995" y1="637" x2="1075" y2="637" stroke="#1a3a8a" stroke-width="2"/>
+<line x1="995" y1="663" x2="1075" y2="663" stroke="#1a3a8a" stroke-width="2"/>
+<circle cx="1068" cy="530" r="11" fill="#ddd" stroke="#555" stroke-width="2"/>
+<line x1="1060" y1="522" x2="1076" y2="538" stroke="#555" stroke-width="2"/>
+<line x1="982" y1="534" x2="994" y2="546" stroke="#c0392b" stroke-width="3"/>
+<line x1="982" y1="546" x2="994" y2="534" stroke="#c0392b" stroke-width="3"/>
+<text x="988" y="526" font-size="8" text-anchor="middle" font-weight="normal" fill="#c0392b" font-family="Helvetica, Arial, sans-serif" transform="rotate(-60 988 526)">DIAG</text>
+<line x1="1006" y1="534" x2="1018" y2="546" stroke="#c0392b" stroke-width="3"/>
+<line x1="1006" y1="546" x2="1018" y2="534" stroke="#c0392b" stroke-width="3"/>
+<text x="1012" y="526" font-size="8" text-anchor="middle" font-weight="normal" fill="#c0392b" font-family="Helvetica, Arial, sans-serif" transform="rotate(-60 1012 526)">INDEX</text>
+<circle cx="964" cy="540" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="540" r="2.2" fill="#222"/>
+<text x="978" y="544" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">EN</text>
+<circle cx="964" cy="564" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="564" r="2.2" fill="#222"/>
+<text x="978" y="568" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">MS1</text>
+<circle cx="964" cy="588" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="588" r="2.2" fill="#222"/>
+<text x="978" y="592" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">MS2</text>
+<circle cx="964" cy="612" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="612" r="2.2" fill="#222"/>
+<text x="978" y="616" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">UART</text>
+<circle cx="964" cy="636" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="636" r="2.2" fill="#222"/>
+<text x="978" y="640" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">PDN</text>
+<circle cx="964" cy="660" r="6" fill="#777" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="660" r="2.2" fill="#222"/>
+<text x="978" y="664" font-size="11" text-anchor="start" font-weight="normal" fill="#aaa" font-family="Helvetica, Arial, sans-serif">CLK</text>
+<circle cx="964" cy="684" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="684" r="2.2" fill="#222"/>
+<text x="978" y="688" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">STEP</text>
+<circle cx="964" cy="708" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="964" cy="708" r="2.2" fill="#222"/>
+<text x="978" y="712" font-size="11" text-anchor="start" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">DIR</text>
+<circle cx="1106" cy="540" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="540" r="2.2" fill="#222"/>
+<text x="1092" y="544" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">VS</text>
+<circle cx="1106" cy="564" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="564" r="2.2" fill="#222"/>
+<text x="1092" y="568" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<circle cx="1106" cy="588" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="588" r="2.2" fill="#222"/>
+<text x="1092" y="592" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">A2</text>
+<circle cx="1106" cy="612" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="612" r="2.2" fill="#222"/>
+<text x="1092" y="616" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">A1</text>
+<circle cx="1106" cy="636" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="636" r="2.2" fill="#222"/>
+<text x="1092" y="640" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">B1</text>
+<circle cx="1106" cy="660" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="660" r="2.2" fill="#222"/>
+<text x="1092" y="664" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">B2</text>
+<circle cx="1106" cy="684" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="684" r="2.2" fill="#222"/>
+<text x="1092" y="688" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">VIO</text>
+<circle cx="1106" cy="708" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1106" cy="708" r="2.2" fill="#222"/>
+<text x="1092" y="712" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<rect x="1255" y="180" width="150" height="150" rx="16" fill="#3a3a3a" stroke="#000" stroke-width="2"/>
+<circle cx="1330" cy="255" r="42" fill="#777" stroke="#222" stroke-width="2"/>
+<circle cx="1330" cy="255" r="8" fill="#ccc" stroke="#222" stroke-width="2"/>
+<text x="1330" y="354" font-size="14" text-anchor="middle" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">NEMA 17  (X axis)</text>
+<text x="1330" y="372" font-size="10" text-anchor="middle" font-weight="normal" fill="#444" font-family="Helvetica, Arial, sans-serif">1.5 A/phase, 1.8 deg</text>
+<circle cx="1255" cy="210" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="210" r="2.2" fill="#222"/>
+<circle cx="1255" cy="240" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="240" r="2.2" fill="#222"/>
+<circle cx="1255" cy="270" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="270" r="2.2" fill="#222"/>
+<circle cx="1255" cy="300" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="300" r="2.2" fill="#222"/>
+<rect x="1255" y="530" width="150" height="150" rx="16" fill="#3a3a3a" stroke="#000" stroke-width="2"/>
+<circle cx="1330" cy="605" r="42" fill="#777" stroke="#222" stroke-width="2"/>
+<circle cx="1330" cy="605" r="8" fill="#ccc" stroke="#222" stroke-width="2"/>
+<text x="1330" y="704" font-size="14" text-anchor="middle" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">NEMA 17  (Y axis)</text>
+<text x="1330" y="722" font-size="10" text-anchor="middle" font-weight="normal" fill="#444" font-family="Helvetica, Arial, sans-serif">1.5 A/phase, 1.8 deg</text>
+<circle cx="1255" cy="560" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="560" r="2.2" fill="#222"/>
+<circle cx="1255" cy="590" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="590" r="2.2" fill="#222"/>
+<circle cx="1255" cy="620" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="620" r="2.2" fill="#222"/>
+<circle cx="1255" cy="650" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="1255" cy="650" r="2.2" fill="#222"/>
+<rect x="1180" y="1050" width="230" height="105" rx="10" fill="#e9e9e9" stroke="#666" stroke-width="2"/>
+<text x="1295.0" y="1096" font-size="15" text-anchor="middle" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">Bench PSU</text>
+<text x="1295.0" y="1118" font-size="11" text-anchor="middle" font-weight="normal" fill="#333" font-family="Helvetica, Arial, sans-serif">12.0 V  ·  current limit 2 A</text>
+<text x="1295.0" y="1138" font-size="9" text-anchor="middle" font-weight="normal" fill="#666" font-family="Helvetica, Arial, sans-serif">motor supply only, ESP32 stays on USB</text>
+<circle cx="1330" cy="1050" r="12" fill="#d62828" stroke="#333" stroke-width="2"/>
+<text x="1330" y="1055" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">+</text>
+<circle cx="1250" cy="1050" r="12" fill="#222" stroke="#333" stroke-width="2"/>
+<text x="1250" y="1055" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">-</text>
+<rect x="60" y="250" width="270" height="190" rx="10" fill="#1e1e1e" stroke="#000" stroke-width="2"/>
+<text x="195.0" y="274" font-size="15" text-anchor="middle" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">XY joystick module</text>
+<circle cx="150" cy="365" r="46" fill="#444" stroke="#000" stroke-width="2"/>
+<circle cx="150" cy="365" r="21" fill="#111" stroke="#666" stroke-width="2"/>
+<circle cx="308" cy="300" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="308" cy="300" r="2.2" fill="#222"/>
+<text x="294" y="304" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">SW</text>
+<circle cx="308" cy="324" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="308" cy="324" r="2.2" fill="#222"/>
+<text x="294" y="328" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">VRY</text>
+<circle cx="308" cy="348" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="308" cy="348" r="2.2" fill="#222"/>
+<text x="294" y="352" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">VRX</text>
+<circle cx="308" cy="372" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="308" cy="372" r="2.2" fill="#222"/>
+<text x="294" y="376" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">+5V</text>
+<circle cx="308" cy="396" r="6" fill="#f4d35e" stroke="#333" stroke-width="1.5"/>
+<circle cx="308" cy="396" r="2.2" fill="#222"/>
+<text x="294" y="400" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="Helvetica, Arial, sans-serif">GND</text>
+<text x="195.0" y="428" font-size="9" text-anchor="middle" font-weight="normal" fill="#bbb" font-family="Helvetica, Arial, sans-serif">header turned to face the board</text>
+<polyline points="706,194 760,194 760,190 964,190" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,194 760,194 760,190 964,190" fill="none" stroke="#8e44ad" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="760,194 760,540 964,540" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="760,194 760,540 964,540" fill="none" stroke="#8e44ad" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,266 790,266 790,262 964,262" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,266 790,266 790,262 964,262" fill="none" stroke="#c9a400" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="790,266 790,612 964,612" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="790,266 790,612 964,612" fill="none" stroke="#c9a400" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,290 735,290" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,290 735,290" fill="none" stroke="#8b5a2b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="735" y="282" width="50" height="16" rx="3" fill="#e8d5a8" stroke="#6b4f1d" stroke-width="2"/>
+<rect x="745" y="282" width="5" height="16" fill="#6b4f1d"/>
+<rect x="756" y="282" width="5" height="16" fill="#000"/>
+<rect x="767" y="282" width="5" height="16" fill="#d62828"/>
+<text x="760.0" y="276" font-size="11" text-anchor="middle" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">1 kOhm</text>
+<polyline points="785,290 790,290" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="785,290 790,290" fill="none" stroke="#8b5a2b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,362 850,362 850,334 964,334" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,362 850,362 850,334 964,334" fill="none" stroke="#1d6fd8" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,170 900,170 900,684 964,684" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,170 900,170 900,684 964,684" fill="none" stroke="#1d6fd8" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,338 925,338 925,708 964,708" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,338 925,338 925,708 964,708" fill="none" stroke="#2a9d3a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="484,338 455,338 455,100 880,100 880,358 964,358" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="484,338 455,338 455,100 880,100 880,358 964,358" fill="none" stroke="#2a9d3a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,506 730,506 730,440 1240,440 1240,334 1106,334" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,506 730,506 730,440 1240,440 1240,334 1106,334" fill="none" stroke="#f77f00" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1240,440 1240,684 1106,684" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1240,440 1240,684 1106,684" fill="none" stroke="#f77f00" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="945,440 945,564 964,564" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="945,440 945,564 964,564" fill="none" stroke="#f77f00" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1000" y="432" font-size="10" text-anchor="middle" font-weight="bold" fill="#f77f00" font-family="Helvetica, Arial, sans-serif">3.3 V</text>
+<polyline points="706,482 745,482 745,1000 1250,1000 1250,1050" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="706,482 745,482 745,1000 1250,1000 1250,1050" fill="none" stroke="#222222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,358 1130,358 1130,410 1430,410" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,358 1130,358 1130,410 1430,410" fill="none" stroke="#222222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,708 1150,708 1150,1000" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,708 1150,708 1150,1000" fill="none" stroke="#222222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="940" y="1018" font-size="10" text-anchor="middle" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">common ground: both ESP32 GND pins, driver logic GND, driver power GND, PSU minus</text>
+<polyline points="1455,92 1455,1030 1330,1030 1330,1050" fill="none" stroke="#fafafa" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1455,92 1455,1030 1330,1030 1330,1050" fill="none" stroke="#d62828" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1430,120 1430,1015 1250,1015 1250,1050" fill="none" stroke="#fafafa" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1430,120 1430,1015 1250,1015 1250,1050" fill="none" stroke="#222222" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,190 1135,190 1135,92 1455,92" fill="none" stroke="#fafafa" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,190 1135,190 1135,92 1455,92" fill="none" stroke="#d62828" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,214 1160,214 1160,120 1430,120" fill="none" stroke="#fafafa" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,214 1160,214 1160,120 1430,120" fill="none" stroke="#222222" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1290,92 1290,101" fill="none" stroke="#fafafa" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1290,92 1290,101" fill="none" stroke="#d62828" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="1278" y1="102" x2="1302" y2="102" stroke="#111" stroke-width="3"/>
+<path d="M 1278 112 Q 1290 104 1302 112" fill="none" stroke="#111" stroke-width="3"/>
+<polyline points="1290,111 1290,120" fill="none" stroke="#fafafa" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1290,111 1290,120" fill="none" stroke="#222222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1310" y="86" font-size="10" text-anchor="start" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">100 uF, 25 V or more</text>
+<text x="1310" y="138" font-size="9" text-anchor="start" font-weight="normal" fill="#444" font-family="Helvetica, Arial, sans-serif">plus leg to 12 V, mount at the driver</text>
+<text x="1180" y="82" font-size="9" text-anchor="middle" font-weight="bold" fill="#d62828" font-family="Helvetica, Arial, sans-serif">12 V</text>
+<text x="1195" y="136" font-size="9" text-anchor="middle" font-weight="bold" fill="#222222" font-family="Helvetica, Arial, sans-serif">0 V</text>
+<polyline points="1106,540 1135,540 1135,480 1455,480" fill="none" stroke="#fafafa" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,540 1135,540 1135,480 1455,480" fill="none" stroke="#d62828" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,564 1160,564 1160,510 1430,510" fill="none" stroke="#fafafa" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,564 1160,564 1160,510 1430,510" fill="none" stroke="#222222" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1290,480 1290,489" fill="none" stroke="#fafafa" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1290,480 1290,489" fill="none" stroke="#d62828" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="1278" y1="490" x2="1302" y2="490" stroke="#111" stroke-width="3"/>
+<path d="M 1278 502 Q 1290 494 1302 502" fill="none" stroke="#111" stroke-width="3"/>
+<polyline points="1290,501 1290,510" fill="none" stroke="#fafafa" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1290,501 1290,510" fill="none" stroke="#222222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1310" y="474" font-size="10" text-anchor="start" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">100 uF, 25 V or more</text>
+<text x="1310" y="528" font-size="9" text-anchor="start" font-weight="normal" fill="#444" font-family="Helvetica, Arial, sans-serif">plus leg to 12 V, mount at the driver</text>
+<text x="1180" y="470" font-size="9" text-anchor="middle" font-weight="bold" fill="#d62828" font-family="Helvetica, Arial, sans-serif">12 V</text>
+<text x="1195" y="526" font-size="9" text-anchor="middle" font-weight="bold" fill="#222222" font-family="Helvetica, Arial, sans-serif">0 V</text>
+<polyline points="1106,238 1180,238 1180,210 1255,210" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,238 1180,238 1180,210 1255,210" fill="none" stroke="#d62828" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,262 1195,262 1195,240 1255,240" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,262 1195,262 1195,240 1255,240" fill="none" stroke="#d62828" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,286 1210,286 1210,270 1255,270" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,286 1210,286 1210,270 1255,270" fill="none" stroke="#1d6fd8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,310 1225,310 1225,300 1255,300" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,310 1225,310 1225,300 1255,300" fill="none" stroke="#1d6fd8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1150" y="188" font-size="10" text-anchor="middle" font-weight="bold" fill="#d62828" font-family="Helvetica, Arial, sans-serif">coil A</text>
+<text x="1150" y="324" font-size="10" text-anchor="middle" font-weight="bold" fill="#1d6fd8" font-family="Helvetica, Arial, sans-serif">coil B</text>
+<polyline points="1106,588 1180,588 1180,560 1255,560" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,588 1180,588 1180,560 1255,560" fill="none" stroke="#d62828" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,612 1195,612 1195,590 1255,590" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,612 1195,612 1195,590 1255,590" fill="none" stroke="#d62828" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,636 1210,636 1210,620 1255,620" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,636 1210,636 1210,620 1255,620" fill="none" stroke="#1d6fd8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,660 1225,660 1225,650 1255,650" fill="none" stroke="#fafafa" stroke-width="7.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1106,660 1225,660 1225,650 1255,650" fill="none" stroke="#1d6fd8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1150" y="538" font-size="10" text-anchor="middle" font-weight="bold" fill="#d62828" font-family="Helvetica, Arial, sans-serif">coil A</text>
+<text x="1150" y="674" font-size="10" text-anchor="middle" font-weight="bold" fill="#1d6fd8" font-family="Helvetica, Arial, sans-serif">coil B</text>
+<polyline points="308,348 400,348 400,242 484,242" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="308,348 400,348 400,242 484,242" fill="none" stroke="#1d6fd8" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="308,300 420,300 420,314 484,314" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="308,300 420,300 420,314 484,314" fill="none" stroke="#e05a9c" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="308,324 440,324 440,266 484,266" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="308,324 440,324 440,266 484,266" fill="none" stroke="#9aa0a6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="730,506 730,660 470,660 470,372 308,372" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="730,506 730,660 470,660 470,372 308,372" fill="none" stroke="#f77f00" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="745,690 460,690 460,396 308,396" fill="none" stroke="#fafafa" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="745,690 460,690 460,396 308,396" fill="none" stroke="#222222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="452" y="678" font-size="10" text-anchor="end" font-weight="normal" fill="#555" font-family="Helvetica, Arial, sans-serif">3.3 V and ground run under the board</text>
+<text x="40" y="44" font-size="22" text-anchor="start" font-weight="bold" fill="#111" font-family="Helvetica, Arial, sans-serif">hyperscope XY stage wiring</text>
+<text x="40" y="66" font-size="12" text-anchor="start" font-weight="normal" fill="#444" font-family="Helvetica, Arial, sans-serif">ESP32 HW-394 + 2x BIGTREETECH TMC2209 V1.3 (UART mode) + 2x NEMA 17 + joystick</text>
+<line x1="40" y1="520" x2="80" y2="520" stroke="#d62828" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="524" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">12 V motor supply (VS)</text>
+<line x1="40" y1="543" x2="80" y2="543" stroke="#f77f00" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="547" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">3.3 V logic (VIO, Y MS1, joystick)</text>
+<line x1="40" y1="566" x2="80" y2="566" stroke="#222222" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="570" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">Ground, all joined</text>
+<line x1="40" y1="589" x2="80" y2="589" stroke="#8e44ad" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="593" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">EN  &lt;- D22, shared   (LOW = drivers on)</text>
+<line x1="40" y1="612" x2="80" y2="612" stroke="#c9a400" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="616" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">UART bus  &lt;- D21 (RX), shared</text>
+<line x1="40" y1="635" x2="80" y2="635" stroke="#8b5a2b" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="639" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">UART TX  &lt;- D19, through 1 kOhm onto the bus</text>
+<line x1="40" y1="658" x2="80" y2="658" stroke="#1d6fd8" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="662" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">STEP  &lt;- D17 (X), D23 (Y)</text>
+<line x1="40" y1="681" x2="80" y2="681" stroke="#2a9d3a" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="685" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">DIR  &lt;- D25 (X), D5 (Y)</text>
+<line x1="40" y1="704" x2="80" y2="704" stroke="#1d6fd8" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="708" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">Joystick VRX -&gt; D34   (blue)</text>
+<line x1="40" y1="727" x2="80" y2="727" stroke="#9aa0a6" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="731" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">Joystick VRY -&gt; D35   (grey)</text>
+<line x1="40" y1="750" x2="80" y2="750" stroke="#e05a9c" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="754" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">Joystick SW -&gt; D33</text>
+<line x1="40" y1="773" x2="80" y2="773" stroke="#d62828" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="777" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">Motor coil A -&gt; A1 / A2</text>
+<line x1="40" y1="796" x2="80" y2="796" stroke="#1d6fd8" stroke-width="5" stroke-linecap="round"/>
+<text x="90" y="800" font-size="12" text-anchor="start" font-weight="normal" fill="#111" font-family="Helvetica, Arial, sans-serif">Motor coil B -&gt; B1 / B2</text>
+<text x="40" y="1190" font-size="12" text-anchor="start" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">- Snip DIAG and INDEX off each driver first: on a breadboard they land in EN's tie strip.</text>
+<text x="40" y="1210" font-size="12" text-anchor="start" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">- MS1 open on X = UART address 0. MS1 to 3.3 V on Y = address 1. Leave MS2, PDN and CLK open on both.</text>
+<text x="40" y="1230" font-size="12" text-anchor="start" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">- The Vref potentiometers do nothing here. Current (0.6 A RMS) is set over UART.</text>
+<text x="40" y="1250" font-size="12" text-anchor="start" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">- Wire the logic side and flash first. Only connect the motors, then 12 V, once both 'driver ok' lines appear.</text>
+<text x="40" y="1270" font-size="12" text-anchor="start" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">- Never plug or unplug a motor while the 12 V supply is on.</text>
+<text x="40" y="1290" font-size="12" text-anchor="start" font-weight="normal" fill="#222" font-family="Helvetica, Arial, sans-serif">- Motor coil pairs read a few ohms between them. Either pair can be A.</text></svg>
