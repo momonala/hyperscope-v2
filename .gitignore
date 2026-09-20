@@ -48,24 +48,6 @@ Thumbs.db
 *.key
 secrets/
 
-# Images (calibration/output data is tracked explicitly, see README)
-*.jpg
-*.jpeg
-*.JPG
-*.JPEG
-*.png
-*.PNG
-*.gif
-*.bmp
-*.tiff
-*.tif
-*.webp
-
-# Video
-*.mp4
-*.avi
-*.mov
-
-# Project-specific
-media/
+# Project-specific: captured, calibration, and corrected frames
+data/
 cache/

@@ -2,7 +2,6 @@
 
 import logging
 import subprocess
-import sys
 import time
 from datetime import datetime
 from datetime import timezone
@@ -15,16 +14,11 @@ from camera_settings import CaptureMode
 from camera_settings import CaptureTarget
 from camera_settings import FocusMode
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(message)s",
-    handlers=[RichHandler(rich_tracebacks=True, markup=True)],
-)
 logger = logging.getLogger(__name__)
 
 
 SHOOT_INTERVAL_SECONDS = 0.1
-MEDIA_DIR = Path(__file__).parent.parent / "media"
+MEDIA_DIR = Path(__file__).parent.parent / "data" / "media"
 
 
 def kill_macos_camera_drivers() -> None:
@@ -42,10 +36,9 @@ def initialize_camera() -> gp.Camera:
     try:
         camera.init()
     except gp.GPhoto2Error as exc:
-        if exc.code == -105:
-            logger.error("Camera not found. Check physical connection.")
-            sys.exit(1)
-        raise exc
+        if exc.code == gp.GP_ERROR_MODEL_NOT_FOUND:
+            raise SystemExit("Camera not found. Check physical connection.") from exc
+        raise
     logger.info("Camera connected")
     return camera
 
@@ -92,7 +85,7 @@ def capture_and_save_image(camera: gp.Camera, save_dir: Path, shot_number: int) 
     return filename
 
 
-def _wait_for_camera_idle(camera: gp.Camera, timeout_ms: int = 1000) -> None:
+def wait_for_camera_idle(camera: gp.Camera, timeout_ms: int = 1000) -> None:
     """Drain camera events until idle, so the next capture doesn't race internal processing."""
     while True:
         event_type, _ = camera.wait_for_event(timeout_ms)
@@ -100,7 +93,7 @@ def _wait_for_camera_idle(camera: gp.Camera, timeout_ms: int = 1000) -> None:
             break
 
 
-def run_timelapse(interval_seconds: int = SHOOT_INTERVAL_SECONDS, save_dir: Path | None = None) -> None:
+def run_timelapse(interval_seconds: float = SHOOT_INTERVAL_SECONDS, save_dir: Path | None = None) -> None:
     """Run a continuous timelapse, capturing images at a fixed interval until interrupted.
 
     Args:
@@ -113,7 +106,7 @@ def run_timelapse(interval_seconds: int = SHOOT_INTERVAL_SECONDS, save_dir: Path
     save_dir.mkdir(parents=True, exist_ok=True)
 
     logger.info("Saving to: %s", save_dir)
-    logger.info("Shooting every %ds — Ctrl+C to stop", interval_seconds)
+    logger.info("Shooting every %.1fs, Ctrl+C to stop", interval_seconds)
 
     kill_macos_camera_drivers()
     camera = initialize_camera()
@@ -125,7 +118,7 @@ def run_timelapse(interval_seconds: int = SHOOT_INTERVAL_SECONDS, save_dir: Path
             try:
                 capture_and_save_image(camera, save_dir, shot)
                 shot += 1
-                _wait_for_camera_idle(camera)
+                wait_for_camera_idle(camera)
             except gp.GPhoto2Error as exc:
                 logger.warning("Capture error (%d): %s — retrying...", exc.code, exc)
                 time.sleep(3)
@@ -138,4 +131,7 @@ def run_timelapse(interval_seconds: int = SHOOT_INTERVAL_SECONDS, save_dir: Path
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO, format="%(message)s", handlers=[RichHandler(rich_tracebacks=True)]
+    )
     run_timelapse()

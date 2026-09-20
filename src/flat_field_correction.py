@@ -80,33 +80,44 @@ def correct(raw: np.ndarray, flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
 
 def stretch_contrast(image: np.ndarray) -> np.ndarray:
     """Stretch per-channel contrast to [0, 255] by clipping the 2nd–98th percentile."""
-    out = np.empty_like(image)
-    for c in range(image.shape[2]):
-        lo = np.percentile(image[:, :, c], 2)
-        hi = np.percentile(image[:, :, c], 98)
-        out[:, :, c] = (image[:, :, c] - lo) / (hi - lo + EPS) * 255.0
-    return np.clip(out, 0, 255).astype(np.uint8)
+    lo, hi = np.percentile(image, [2, 98], axis=(0, 1))
+    stretched = (image - lo) / (hi - lo + EPS) * 255.0
+    return np.clip(stretched, 0, 255).astype(np.uint8)
 
 
 @app.command()
 def run(
     flat_field: list[Path] = typer.Option(
-        ..., "--flat", "-f",
+        ...,
+        "--flat",
+        "-f",
         help="Path to flat-field image(s). Pass multiple times to average frames.",
-        exists=True, file_okay=True, dir_okay=False,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
     ),
     dark_frame: Path = typer.Option(
-        ..., "--dark", "-d",
+        ...,
+        "--dark",
+        "-d",
         help="Path to the dark-frame image.",
-        exists=True, file_okay=True, dir_okay=False,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
     ),
     raw_images: list[Path] = typer.Option(
-        ..., "--raw", "-r",
+        ...,
+        "--raw",
+        "-r",
         help="Path to raw image(s) to correct. Pass multiple times.",
-        exists=True, file_okay=True, dir_okay=False,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
     ),
     output_dir: Path = typer.Option(
-        Path("output"), "--output", "-o",
+        Path("data/output"),
+        "--output",
+        "-o",
         help="Directory to write corrected images.",
     ),
 ) -> None:
@@ -129,7 +140,7 @@ def run(
 
         out_path = output_dir / f"{raw_path.stem}_corrected{raw_path.suffix}"
         cv2.imwrite(str(out_path), result)
-        logger.info("  → saved %s", out_path)
+        logger.info("Saved %s", out_path)
 
     logger.info("Done. %d image(s) written to %s", len(raw_images), output_dir)
 

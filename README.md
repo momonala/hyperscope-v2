@@ -1,64 +1,115 @@
 # hyperscope
 
-[![CI](https://github.com/momonala/hyperscope/actions/workflows/ci.yml/badge.svg)](https://github.com/momonala/hyperscope/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/momonala/hyperscope/branch/main/graph/badge.svg)](https://codecov.io/gh/momonala/hyperscope)
+[![CI](https://github.com/momonala/hyperscope-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/momonala/hyperscope-v2/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/momonala/hyperscope-v2/branch/main/graph/badge.svg)](https://codecov.io/gh/momonala/hyperscope-v2)
 
-Camera control and image-processing tools for microscope/telescope photography: a gPhoto2-driven DSLR timelapse capture script, and a flat-field/dark-frame correction CLI for calibrating the resulting raw images.
+Microscope photography rig: a DSLR shoots timelapses over USB, two steppers drive the stage knobs, and a correction CLI flattens the resulting frames.
 
-## Prerequisites
-
-- Python 3.12+
-- [uv](https://github.com/astral-sh/uv) for dependency management
-- `gphoto2` system library (macOS: `brew install gphoto2`) for camera control
-- A gPhoto2-compatible camera (developed against Nikon DSLRs) connected via USB, for the capture script only
-
-## Installation
+## Quick start
 
 ```bash
-git clone https://github.com/momonala/hyperscope.git
-cd hyperscope
+git clone https://github.com/momonala/hyperscope-v2.git
+cd hyperscope-v2
 uv sync
+./test-and-lint.sh   # pytest, black, ruff
 ```
 
-## Running
+Needs Python 3.12+, [uv](https://github.com/astral-sh/uv), and `brew install gphoto2` for camera control.
 
-**Timelapse capture** (`src/camera_control.py`) — connects to the camera, configures it for unattended shooting (manual focus, quiet shutter, RAM capture target), and shoots continuously until interrupted:
+**Shoot a timelapse** — configures the camera for unattended shooting, then shoots until Ctrl+C:
+
 ```bash
 uv run python src/camera_control.py
 ```
-Images save to `media/<YYYYMMDD>/` as `<date>_<time>_<shot>.jpg`. `SHOOT_INTERVAL_SECONDS` (in `camera_control.py`) sets the delay between shots. Camera widget names/values (focus mode, capture mode, etc.) are Nikon-specific — verify against your camera with `gphoto2 --get-config /main/capturesettings/<widget>` before relying on `src/camera_settings.py`'s enums.
 
-**Flat-field correction** (`src/flat_field_correction.py`) — corrects raw images using dark-frame subtraction and flat-field normalization:
+Frames land in `data/media/<YYYYMMDD>/` as `<date>_<time>_<shot>.jpg`.
+
+**Correct the frames** — dark-frame subtraction and flat-field normalization:
+
 ```bash
 uv run python src/flat_field_correction.py \
-  --flat calibration/2x/flat_00.JPG \
-  --dark calibration/dark.JPG \
-  --raw media/20260403/some_shot.jpg \
-  --output output/
-```
-`--flat` and `--raw` accept multiple `-f`/`-r` flags to average several frames or batch-process several raws.
-
-## Project Structure
-
-```
-hyperscope/
-├── src/
-│   ├── camera_control.py         # gPhoto2 timelapse capture loop
-│   ├── camera_settings.py        # StrEnums for gPhoto2 config values (Nikon-specific)
-│   ├── flat_field_correction.py  # Typer CLI: dark/flat calibration pipeline
-│   └── config.py                 # Exposes [tool.config] via `uv run config`
-├── calibration/                  # Flat-field and dark-frame reference images
-├── media/                        # Captured timelapse frames (gitignored)
-├── output/                       # Corrected images from flat_field_correction.py
-├── tests/
-└── pyproject.toml
+  --flat data/calibration/2x/flat_00.JPG \
+  --dark data/calibration/dark.JPG \
+  --raw data/media/20260403/20260403_210143_0001.jpg
 ```
 
-## Key Concepts
+`--flat` and `--raw` repeat, to average several flats or batch several raws. Output goes to `data/output/` unless `--output` says otherwise.
 
-| Concept | Description |
-|---------|-------------|
-| Flat-field correction | `corrected = (raw - dark) / (flat - dark)`, then normalized to mid-grey (~128) per channel via median — removes vignetting and sensor non-uniformity |
-| Edge cropping | Outer 200px of each frame is cropped before correction; sensor corners fall outside the optical circle and produce near-zero flat values that would corrupt the ratio |
-| Dark frame | A reference shot with no light exposure, used to subtract fixed-pattern sensor noise |
-| Capture target: RAM | Images are captured to the camera's internal RAM, not its memory card, for faster continuous shooting |
+**Drive the stage** — needs `arduino-cli` with the `esp32:esp32` core plus the `TMCStepper` and `FastAccelStepper` libraries:
+
+```bash
+arduino-cli compile --fqbn esp32:esp32:esp32 firmware/hyperscope_stage
+arduino-cli upload  --fqbn "esp32:esp32:esp32:UploadSpeed=115200" -p /dev/cu.usbserial-XXXX firmware/hyperscope_stage
+arduino-cli monitor -p /dev/cu.usbserial-XXXX -c baudrate=115200
+```
+
+Then talk to it from the host. `status` resets the board and prints its boot banner, which is how you confirm the driver answered:
+
+```bash
+uv run python src/stage.py status
+uv run python src/stage.py send "MOVE X3200"   # one knob revolution
+uv run python src/stage.py jog                  # tap arrows to step, hold to run
+```
+
+The driver only answers once its 12 V supply is on. If the banner says `driver not responding`, see [`docs/hardware.md`](docs/hardware.md).
+
+## How it works
+
+Capture, correction, and the stage are three independent programs, joined only by the files in `data/`.
+
+**Capture.** `camera_control.py` drives the camera through gPhoto2 and captures to the camera's internal RAM rather than its card, so continuous shooting keeps up, then writes each frame to disk.
+
+**Correction.** `flat_field_correction.py` computes `(raw - dark) / (flat - dark)` per pixel and renormalizes each channel to mid-grey by its median, removing vignetting and sensor non-uniformity. It crops the outer 200 px first: the sensor corners fall outside the optical circle, where near-zero flat values would blow up the ratio.
+
+**Stage.** An ESP32 drives two TMC2209 drivers in UART mode, which set current and microstepping in software rather than by trimpot. Positions are in microsteps, 3200 per knob revolution at 16 microsteps. Wiring, pin map, serial protocol, and the bring-up checklist are in [`docs/hardware.md`](docs/hardware.md).
+
+## Configuration
+
+| What | Where |
+|------|-------|
+| Shot interval, media directory | `SHOOT_INTERVAL_SECONDS` and `MEDIA_DIR` in `src/camera_control.py` |
+| Correction kernel, edge crop | Module constants in `src/flat_field_correction.py` |
+| Stage pins, current, speeds | `firmware/hyperscope_stage/config.h` |
+
+Camera widget names and values are Nikon-specific. Check yours before trusting the enums in `src/camera_settings.py`:
+
+```bash
+gphoto2 --get-config /main/capturesettings/capturemode
+```
+
+## Project structure
+
+```
+src/
+├── camera_control.py         # gPhoto2 timelapse capture loop
+├── camera_settings.py        # StrEnums for gPhoto2 config values (Nikon)
+├── flat_field_correction.py  # Typer CLI: dark/flat calibration pipeline
+└── stage.py                  # Serial client for the stage controller
+firmware/hyperscope_stage/    # ESP32 + TMC2209 stage controller (Arduino)
+docs/
+├── hardware.md               # BOM, wiring, pin map, serial protocol, bring-up
+├── diagrams/                 # Wiring SVG, generated by make_wiring_diagram.py
+├── datasheets/               # TMC2209, BTT driver board, ESP32-WROOM-32D
+└── photos/                   # Board photos
+data/                         # Gitignored
+├── calibration/              # Flat-field and dark-frame reference images
+├── media/                    # Captured frames
+└── output/                   # Corrected frames
+```
+
+## Key decisions
+
+- **Three programs, joined by files.** Capture, correction, and the stage share nothing but `data/`. Each can be run, tested, and replaced alone, at the cost of no coordination between shots and moves yet.
+- **A separate microcontroller for the stage.** Step timing needs microsecond accuracy that a Linux host cannot promise, so an ESP32 generates steps and the host only sends commands over serial. Arduino rather than PlatformIO or MicroPython because the two driver libraries are Arduino-native.
+- **TMC2209 in UART mode.** Current, microstepping, and chopper mode are set from `config.h` instead of a trimpot and solder jumpers, and the firmware can read the driver back to detect a reset. The cost is one shared single-wire bus that every driver must be addressed on correctly.
+- **Rated current, StealthChop, 47 kHz PWM.** The knobs bind at spots, so the motors run at their rated 1 A RMS; 25 % hold keeps the drivers cool, the supply within a 2 A limit, and the motors silent at rest. The default 35 kHz PWM produced an audible whirr at standstill.
+- **Capture to the camera's RAM.** Writing to the card between shots was the bottleneck for continuous shooting. Frames are pulled over USB instead, so a dropped USB link loses the shot.
+- **Positions in microsteps.** Nothing has measured the knob pitch yet, so the firmware stays in its native unit rather than guessing a conversion.
+
+## Limitations
+
+- **Stage units are microsteps, not microns.** Converting needs the knob pitch per revolution, which is unmeasured.
+- **No homing or limits.** Nothing knows where the stage ends. The driver's DIAG pins are snipped, so a future stall-based end stop has to read StallGuard over the UART.
+- **Capture and stage do not talk.** `src/stage.py` drives the stage by hand, but nothing moves it between shots during a timelapse.
+
+_Last updated: 2026-09-20_
