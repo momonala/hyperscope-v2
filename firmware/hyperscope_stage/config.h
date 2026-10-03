@@ -16,14 +16,24 @@ constexpr uint8_t STEALTHCHOP_PWM_FREQ = 2;
 constexpr uint16_t MICROSTEPS = 16;  // 3200 microsteps per knob revolution
 constexpr float TMC_R_SENSE = 0.11f;
 
-constexpr uint8_t PIN_X_STEP = 17;
-constexpr uint8_t PIN_X_DIR = 25;  // left column: the right-hand column is full
-constexpr uint8_t PIN_Y_STEP = 23;
-constexpr uint8_t PIN_Y_DIR = 5;  // strapping pin, but only sampled at reset and DIR is harmless high
-constexpr uint8_t PIN_EN = 22;  // shared by both drivers, active low
+// Carrier PCB rev B pin map (hardware/pcb/generate.py is the source of truth).
+// Driver signals sit on the DevKit's 3V3-side row in module-header order. With the
+// USB-C out of the left board edge that row is the one nearest the bottom edge, so
+// the traces pass under the DevKit. GPIO 5 is a strapping pin sampled only at reset.
+constexpr uint8_t PIN_X_STEP = 5;
+constexpr uint8_t PIN_X_DIR = 18;
+constexpr uint8_t PIN_Y_STEP = 19;
+constexpr uint8_t PIN_Y_DIR = 21;
+constexpr uint8_t PIN_EN = 4;  // shared by both drivers, active low
 
-constexpr uint8_t PIN_TMC_RX = 21;
-constexpr uint8_t PIN_TMC_TX = 19;   // through 1 kOhm onto the shared PDN_UART line
+// The carrier PCB routes each driver's DIAG pin here
+// through 1 kOhm. Unused until the knob hard stops are measured; configure as
+// INPUT_PULLDOWN so a module with DIAG snipped reads as "no stall".
+constexpr uint8_t PIN_X_DIAG = 22;
+constexpr uint8_t PIN_Y_DIAG = 23;
+
+constexpr uint8_t PIN_TMC_RX = 17;
+constexpr uint8_t PIN_TMC_TX = 16;   // through 1 kOhm onto the shared PDN_UART line
 constexpr uint8_t TMC_ADDR_X = 0b00;  // MS1 and MS2 open
 constexpr uint8_t TMC_ADDR_Y = 0b01;  // MS1 tied to VIO
 constexpr uint32_t TMC_BAUD = 115200;

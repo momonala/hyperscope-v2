@@ -34,6 +34,10 @@ uv run python docs/diagrams/make_wiring_diagram.py
   --window-size=1500,1320 --screenshot="$PWD/docs/diagrams/wiring.png" "file://$PWD/docs/diagrams/wiring.svg"
 ```
 
+## Carrier PCB
+
+The DevKit and the driver modules plug into a carrier PCB. KiCad sources, Gerbers, the generator script, and fabrication settings live in [`hardware/pcb/README.md`](../hardware/pcb/README.md). The breadboard notes below are for bench debugging.
+
 ## Breadboard placement
 
 The driver is 0.6" wide, so it straddles the centre trench like a wide DIP. Two extra pins stand on the short edge beside the potentiometer, soldered and pointing down like the main headers: **DIAG** and **INDEX**. The bare plated hole between them is the Vref test point and carries no pin. Both pins are driver outputs, and neither is used here.
@@ -57,30 +61,34 @@ Breadboard contacts are rated around 1 A. That is fine for bench testing at 1 A 
 
 ### ESP32 to TMC2209
 
-Pins are grouped so that driver signals leave the DevKit's right-hand column and joystick signals its left-hand column, each in the same top-to-bottom order as the pin it lands on. That keeps the loom untangled on the bench and in the diagram. X DIR on D25 is the exception: the right column ran out of usable pins.
+The driver signals sit on the DevKit's 3V3-side row in the same left-to-right order as the module header. With the USB-C out of the left board edge that row is the lower one, nearest the board edge, and the traces pass under the DevKit.
 
 | Signal | X driver | Y driver | ESP32 | Notes |
 |--------|----------|----------|-------|-------|
-| EN | EN | EN | D22 (shared) | Active low |
-| PDN_UART (header pin 4) | PDN | PDN | D21 direct, D19 via 1 kOhm | Both drivers on one wire, one resistor |
-| STEP | STEP | | D17 | |
-| DIR | DIR | | D25 | |
-| STEP | | STEP | D23 | |
-| DIR | | DIR | D5 | |
+| EN | EN | EN | D4 (shared) | Active low. The module pulls EN low (20 kΩ) and GPIO 4 has a weak internal pull-down at reset, so the PCB adds a 2.2 kΩ pull-up to 3V3 (about 2.85 V, above the driver's 2.3 V threshold); otherwise both drivers are enabled at pot current while D4 floats during boot |
+| PDN_UART (header pin 4) | PDN | PDN | D17 direct, D16 via 1 kOhm | Both drivers on one wire, one resistor |
+| STEP | STEP | | D5 | Strapping pin, sampled only at reset |
+| DIR | DIR | | D18 | |
+| STEP | | STEP | D19 | |
+| DIR | | DIR | D21 | |
+| DIAG | DIAG | | D22 | Via 1 kOhm and a solder jumper on the PCB, see below |
+| DIAG | | DIAG | D23 | |
 | VDD (marked **VIO** on V1.3) | 3V3 | 3V3 | 3V3 | Sets the driver's logic level |
 | GND (logic side) | GND | GND | GND | |
-| MS1 | open | 3V3 | | UART address: X = 0, Y = 1 |
-| MS2 | open | open | | Board has 20 kOhm pulldowns |
+| MS1 | GND | 3V3 | | UART address: X = 0, Y = 1. Solder jumpers on the PCB |
+| MS2 | GND | GND | | |
 | CLK, PDN (pin 5) | open | open | | |
-| DIAG, INDEX | snipped | snipped | | See breadboard placement above |
+| INDEX | open | open | | |
 
 The BTT board connects UART to header pin 4 from the factory (manual §8.1). Pin 5 is a second PDN pad that is not connected; leave it alone. In UART mode the MS1/MS2 pins stop selecting microsteps and become the address bits, and firmware sets 16 microsteps and current over UART. The Vref potentiometer is ignored (`I_scale_analog = 0`).
+
+**DIAG jumper.** The module's two extra pins beside EN are DIAG and INDEX, and which is which was not confirmed from the module photos. Each socket has a three-pad solder jumper on the back of the PCB: move a motor, probe which of the two pads pulses (that one is INDEX), then bridge the centre pad to the other one.
 
 ### Single-wire UART detail
 
 ```
-ESP32 GPIO19 (TX) ──[1 kΩ]──┬── PDN_UART (X driver)
-ESP32 GPIO21 (RX) ──────────┤
+ESP32 GPIO16 (TX) ──[1 kΩ]──┬── PDN_UART (X driver)
+ESP32 GPIO17 (RX) ──────────┤
                             └── PDN_UART (Y driver)
 ```
 
@@ -105,11 +113,13 @@ Find the pairs with a multimeter: the two wires of one coil read a few ohms betw
 | VRY | D35 |
 | SW | D33 (internal pull-up) |
 
+On the PCB the joystick plugs into a 1x5 pin header with dupont leads, with a 100 nF filter on each axis.
+
 D34 and D35 are input-only ADC1 pins with no pull-ups, which is why SW goes to D33 instead.
 
 ### Pins to avoid on this board
 
-GPIO 0, 2, 12, 15 are boot-strapping pins; GPIO 6–11 are the flash; GPIO 1/3 are the USB serial. None of them are used above. GPIO 5 is also sampled at reset, but only for SDIO timing, and a DIR line sitting high there is harmless.
+GPIO 0, 2, 12, 15 are boot-strapping pins; GPIO 6–11 are the flash; GPIO 1/3 are the USB serial. None of them are used above. GPIO 5 is also sampled at reset, but only for SDIO timing, and a STEP line there is harmless because the drivers are disabled until the firmware enables them.
 
 ## Firmware
 

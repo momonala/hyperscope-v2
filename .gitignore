@@ -51,3 +51,12 @@ secrets/
 # Project-specific: captured, calibration, and corrected frames
 data/
 cache/
+
+# KiCad and Freerouting scratch
+hardware/pcb/logs/
+hardware/pcb/freerouting.json
+hardware/pcb/**/*.kicad_prl
+hardware/pcb/**/*-backups/
+hardware/pcb/**/*.dsn
+hardware/pcb/**/*.ses
+hardware/pcb/freerouting-*.jar
