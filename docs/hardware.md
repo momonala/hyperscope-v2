@@ -71,8 +71,10 @@ The driver signals sit on the DevKit's 3V3-side row in the same left-to-right or
 | DIR | DIR | | D18 | |
 | STEP | | STEP | D19 | |
 | DIR | | DIR | D21 | |
-| DIAG | DIAG | | D22 | Via 1 kOhm and a solder jumper on the PCB, see below |
-| DIAG | | DIAG | D23 | |
+| DIAG | DIAG | | D13 | Via 1 kOhm and a solder jumper on the PCB, see below |
+| DIAG | | DIAG | D22 | |
+| Motor LED | D2 (blue) | | D32 | Via 100 Ohm, lit while X moves (PCB rev C) |
+| Motor LED | | D3 (blue) | D23 | Via 100 Ohm, lit while Y moves |
 | VDD (marked **VIO** on V1.3) | 3V3 | 3V3 | 3V3 | Sets the driver's logic level |
 | GND (logic side) | GND | GND | GND | |
 | MS1 | GND | 3V3 | | UART address: X = 0, Y = 1. Solder jumpers on the PCB |

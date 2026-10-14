@@ -1,12 +1,13 @@
 # Stage controller carrier PCB
 
-A 2-layer, 84 x 68 mm carrier that the ESP32 HW-394 DevKit and two BIGTREETECH TMC2209
+A 2-layer, 84 x 72 mm carrier (rev C) that the ESP32 HW-394 DevKit and two BIGTREETECH TMC2209
 modules plug into. Everything else is through-hole and hand-soldered: motor and 12 V
-screw terminals, a joystick header, input protection, bulk capacitors, and six solder
-jumpers on the back. Electrical design and pin map: [`docs/hardware.md`](../../docs/hardware.md).
+screw terminals, a joystick header, input protection, bulk capacitors, two blue motor-active
+LEDs, and six solder jumpers on the back. Electrical design and pin map: [`docs/hardware.md`](../../docs/hardware.md).
 
-Not yet ordered. Before ordering, print `review/top.svg` at 1:1 and stand a DevKit and a
-TMC2209 module on it.
+Rev C is not yet ordered. Rev B was made and its driver sockets were 15.24 mm between rows
+instead of 12.7 mm, so the modules did not fit; rev C fixes that. Before ordering, print
+`review/top.svg` at 1:1 and stand a DevKit and a TMC2209 module on it.
 
 ## Generating
 
@@ -42,23 +43,29 @@ Top view, USB-C out of the left edge, motor wires out of the top edge:
   DevKit-row change against `docs/photos/esp32-hw394-devkit-top.png` rotated USB-left.
   A copper keep-out sits under the antenna.
 - **Driver modules** X and Y side by side above the DevKit, each in two 1x8 female headers
-  15.24 mm apart plus a 1x2 for DIAG/INDEX. Logic row faces the DevKit, power row faces
-  its motor terminal. 100 µF across VS/GND beside each socket.
+  12.7 mm apart (the StepStick row pitch; 15.24 mm is the module's board width) plus a 1x2
+  for DIAG/INDEX. Logic row faces the DevKit, power row faces its motor terminal. 100 µF
+  across VS/GND beside each socket.
+- **Resistor channel** between the module logic rows and the DevKit: R4 (EN pull-up) and R1
+  (UART TX) sit in line with their signals. R2/R3 (DIAG series) stand beside each module's
+  DIAG jumper. All resistors are standing, 2.54 mm pitch.
+- **Motor LEDs** D2/D3, blue, under each terminal's B2 end, driven from GPIO 32 (X) and
+  GPIO 23 (Y) through R5/R6; firmware lights each while its axis moves.
 - **Back, under each module:** MS1 and MS2 address jumpers (GND left pad, 3V3 right pad in
   top view) and the DIAG-select jumper. All ship open; bridge the address jumpers before
   first power-up. Intended addresses: X = 00, Y = MS1 high.
 - **12 V** enters top right: screw terminal, 3 A polyfuse, series Schottky (SR340) for
   reverse polarity, 470 µF bulk. VIN on the DevKit is unconnected; logic runs from USB.
 - **Joystick** 1x5 pin header bottom right (GND, 3V3, VRX, VRY, SW) with 100 nF on each axis.
-- **Spare pad row** along the bottom edge, no header fitted: GPIO 15 2 13 14 27 26 25 32 39 36,
-  then 3x 3V3 and 3x GND. GPIO 15 and 2 are boot-strapping pins.
+- **Spare pad row** along the bottom edge, no header fitted: GPIO 15 2 14 27 26 25 39 36,
+  then 3x 3V3 and 3x GND. GPIO 15 and 2 are boot-strapping pins; 39 and 36 are input-only.
 - Four M3 mounting holes.
 
 Copper: VM 1.5 mm, motor phases 1.0 mm, logic 0.25 mm, ground pours on both faces.
 
 ## Fab settings
 
-84 x 68 mm, 3 mm corner radius, 2 layers, 1.6 mm FR-4, 1 oz, lead-free HASL, min track
+84 x 72 mm, 3 mm corner radius, 2 layers, 1.6 mm FR-4, 1 oz, lead-free HASL, min track
 0.25 mm, min clearance 0.2 mm, min drill 0.3 mm, vias 0.8/0.4 mm. Under 100 x 100 mm keeps
 the cheapest fab tier.
 
@@ -80,8 +87,10 @@ heatsinks and the DIAG pin intact.
 | C1, C2 | 2 | Electrolytic 100 µF 35 V, 6.3 x 11 mm, 2.5 mm pitch | One per module |
 | C3 | 1 | Electrolytic 470 µF 25 V, 10 x 12.5 mm, 5 mm pitch | Input bulk |
 | C6, C7 | 2 | Ceramic 100 nF disc, 5 mm pitch | Joystick ADC filters |
-| R1 to R3 | 3 | 1 kΩ 1/4 W axial | UART TX and DIAG series |
-| R4 | 1 | 2.2 kΩ 1/4 W axial | EN pull-up |
+| R1 to R3 | 3 | 1 kΩ 1/4 W axial, standing | UART TX and DIAG series |
+| R4 | 1 | 2.2 kΩ 1/4 W axial, standing | EN pull-up; 1 kΩ also works, 10 kΩ does not |
+| R5, R6 | 2 | 100 Ω 1/4 W axial, standing | LED series; raise for dimmer, down to 47 Ω for brighter |
+| D2, D3 | 2 | Blue LED, 5 mm or 3 mm THT | Motor active; flat side (cathode) toward the left |
 | JP1 to JP6 | | Solder jumpers, bare pads on the back | See layout |
 | H1 to H4 | | M3 mounting holes | |
 

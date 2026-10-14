@@ -16,6 +16,7 @@ struct Axis {
   const char* name;
   uint8_t stepPin;
   uint8_t dirPin;
+  uint8_t ledPin;
   uint8_t joyPin;
   bool joyInvert;
   TMC2209Stepper driver;
@@ -26,8 +27,8 @@ struct Axis {
 
 constexpr size_t AXIS_COUNT = 2;
 Axis axes[AXIS_COUNT] = {
-    {"X", PIN_X_STEP, PIN_X_DIR, PIN_JOY_X, JOY_INVERT_X, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_X)},
-    {"Y", PIN_Y_STEP, PIN_Y_DIR, PIN_JOY_Y, JOY_INVERT_Y, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_Y)},
+    {"X", PIN_X_STEP, PIN_X_DIR, PIN_X_LED, PIN_JOY_X, JOY_INVERT_X, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_X)},
+    {"Y", PIN_Y_STEP, PIN_Y_DIR, PIN_Y_LED, PIN_JOY_Y, JOY_INVERT_Y, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_Y)},
 };
 
 FastAccelStepperEngine engine;
@@ -123,8 +124,16 @@ bool anyRunning() {
   return false;
 }
 
+void updateMotorLeds() {
+  for (Axis& axis : axes) digitalWrite(axis.ledPin, axis.stepper->isRunning() ? HIGH : LOW);
+}
+
 void waitForMotion() {
-  while (anyRunning()) delay(1);
+  while (anyRunning()) {
+    updateMotorLeds();
+    delay(1);
+  }
+  updateMotorLeds();
 }
 
 // Reads microsteps and current back from each driver: they fall back to the
@@ -465,6 +474,10 @@ void pollSerial() {
 void configureIo() {
   pinMode(PIN_JOY_SW, INPUT_PULLUP);
   pinMode(PIN_EN, OUTPUT);
+  for (Axis& axis : axes) {
+    pinMode(axis.ledPin, OUTPUT);
+    digitalWrite(axis.ledPin, LOW);
+  }
   setDriversEnabled(false);  // motors free until the drivers are configured
   analogReadResolution(12);
 }
@@ -521,4 +534,5 @@ void loop() {
   pollSerial();
   pollJoystick();
   restoreResetDrivers();
+  updateMotorLeds();
 }

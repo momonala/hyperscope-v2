@@ -35,7 +35,7 @@ FOOTPRINTS = KICAD / "SharedSupport/footprints"
 FREEROUTING = Path(os.environ.get("FREEROUTING_JAR", HERE / "freerouting-1.9.0.jar"))
 JAVA = os.environ.get("JAVA", "/opt/homebrew/opt/openjdk@21/bin/java")
 
-BOARD_W, BOARD_H, CORNER_R = 84.0, 68.0, 3.0
+BOARD_W, BOARD_H, CORNER_R = 84.0, 72.0, 3.0
 NC = None  # a pin with no net
 
 # ---------------------------------------------------------------- footprints
@@ -44,7 +44,7 @@ FP = {
     "sock15": "Connector_PinSocket_2.54mm:PinSocket_1x15_P2.54mm_Vertical",
     "sock8": "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical",
     "sock2": "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical",
-    "hdr16": "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical",
+    "hdr14": "Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical",
     "hdr5": "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical",
     # 5.0 mm pitch screw terminals (KF128 / MX126 style), side wire entry
     "term2": "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm",
@@ -54,7 +54,8 @@ FP = {
     "cp63": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
     "cp10": "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm",
     "cdisc": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
-    "r": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "r": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical",  # standing, pin 1 under the body
+    "led5": "LED_THT:LED_D5.0mm",  # 3 mm LEDs fit the same holes
     "sj3": "Jumper:SolderJumper-3_P1.3mm_Open_RoundedPad1.0x1.5mm",
     "m3": "MountingHole:MountingHole_3.2mm_M3",
 }
@@ -65,6 +66,7 @@ SYM = {
     "cp": "Device:C_Polarized",
     "c": "Device:C",
     "d": "Device:D_Schottky",
+    "led": "Device:LED",
     "fuse": "Device:Fuse",
     "sj3": "Jumper:SolderJumper_3_Open",
     "hole": "Mechanical:MountingHole",
@@ -110,14 +112,14 @@ def seq(nets):
 # enters top-right; the joystick header sits bottom right.
 
 # DevKit HW-394, 30 pins, rows 25.4 mm apart, USB end at x=0.
-DEV_X1, DEV_YT, DEV_YB = 10.0, 34.8, 60.2  # pin 1 (VIN / 3V3) nearest the USB end
+DEV_X1, DEV_YT, DEV_YB = 10.0, 38.8, 64.2  # pin 1 (VIN / 3V3) nearest the USB end
 # USB end -> antenna end. Upper row (DEV_YT) is the VIN column, lower row (DEV_YB)
 # the 3V3 column. The pin pattern is symmetric, so a swapped row passes ERC, DRC and
 # the paper fit test yet puts VIN on the 3V3 net: check against the photo, not the fit.
 DEV_3V3 = ["+3V3", "GND", "GPIO15", "GPIO2", "DRV_EN", "TMC_TX", "TMC_UART", "X_STEP",
-           "X_DIR", "Y_STEP", "Y_DIR", NC, NC, "DIAG_X", "DIAG_Y"]
-DEV_VIN = [NC, "GND", "GPIO13", NC, "GPIO14", "GPIO27", "GPIO26", "GPIO25",
-           "JOY_SW", "GPIO32", "JOY_VRY", "JOY_VRX", "GPIO39", "GPIO36", NC]
+           "X_DIR", "Y_STEP", "Y_DIR", NC, NC, "DIAG_Y", "LED_Y"]
+DEV_VIN = [NC, "GND", "DIAG_X", NC, "GPIO14", "GPIO27", "GPIO26", "GPIO25",
+           "JOY_SW", "LED_X", "JOY_VRY", "JOY_VRX", "GPIO39", "GPIO36", NC]
 DEV_3V3_NAMES = ["3V3", "GND", "D15", "D2", "D4", "D16", "D17", "D5", "D18", "D19", "D21", "RX0", "TX0", "D22", "D23"]
 DEV_VIN_NAMES = ["VIN", "GND", "D13", "D12", "D14", "D27", "D26", "D25", "D33", "D32", "D35", "D34", "VN", "VP", "EN"]
 
@@ -126,10 +128,14 @@ part("J1", SYM["conn"](15), "sock15", "HW-394 3V3 row (lower, board edge side)",
 part("J2", SYM["conn"](15), "sock15", "HW-394 VIN row (upper, module side)", seq(DEV_VIN), DEV_X1, DEV_YT, 90,
      "ESP32 DevKit socket, VIN column")
 
-# Driver modules X and Y. Logic row (EN..DIR left to right) at y=30 facing the
-# DevKit, power row (VS..GND) 15.24 mm above it. DIAG and INDEX sit on the EN end,
-# one and two pitches inboard, so here they stand above EN on the module's left edge.
-DRV_YL, DRV_YP = 30.0, 30.0 - 15.24
+# Driver modules X and Y. Logic row (EN..DIR left to right) facing the DevKit, power
+# row (VS..GND) 12.7 mm above it: the StepStick pin-row pitch. 15.24 mm is the module's
+# board width, not its pin spacing (rev B used it and the modules did not fit). DIAG
+# and INDEX sit on the EN end, one and two pitches inboard, so here they stand above
+# EN on the module's left edge. The channel between the logic rows and the DevKit
+# holds the series and pull-up resistors, in line with the signals they sit on.
+DRV_YL, DRV_YP = 31.0, 31.0 - 12.7
+CHAN_Y = 35.0
 DRV_X = {"X": 17.0, "Y": 46.0}  # EN / VS pin x; leaves room for the 5 mm terminals and caps above
 DIAG_GPIO = {"X": "DIAG_X", "Y": "DIAG_Y"}
 BOTTOM = set()  # refs mounted on the back
@@ -146,24 +152,35 @@ for i, ax in enumerate("XY"):
     # lies along x with its centre pad directly above its socket pin, so the stub
     # runs straight down; staggered in y so the two do not touch. GND is the left
     # pad and 3V3 the right pad in top view.
-    part(f"JP{2 * i + 1}", SYM["sj3"], "sj3", f"{ax} MS1", {1: "GND", 2: f"{ax}_MS1", 3: "+3V3"}, x + 2.54, 22.0, 0)
-    part(f"JP{2 * i + 2}", SYM["sj3"], "sj3", f"{ax} MS2", {1: "GND", 2: f"{ax}_MS2", 3: "+3V3"}, x + 5.08, 25.5, 0)
+    part(f"JP{2 * i + 1}", SYM["sj3"], "sj3", f"{ax} MS1", {1: "GND", 2: f"{ax}_MS1", 3: "+3V3"}, x + 2.54, 23.0, 0)
+    part(f"JP{2 * i + 2}", SYM["sj3"], "sj3", f"{ax} MS2", {1: "GND", 2: f"{ax}_MS2", 3: "+3V3"}, x + 5.08, 26.5, 0)
     part(f"JP{5 + i}", SYM["sj3"], "sj3", f"{ax} DIAG sel",
-         {1: f"{ax}_DIAGP1", 2: f"{ax}_DIAGSEL", 3: f"{ax}_DIAGP2"}, x - 4.54, 20.5, 90)
+         {1: f"{ax}_DIAGP1", 2: f"{ax}_DIAGSEL", 3: f"{ax}_DIAGP2"}, x - 4.54, 21.5, 90)
+    # DIAG series resistor just below its select jumper, left of the module.
+    part(f"R{2 + i}", SYM["r"], "r", "1k", {1: f"{ax}_DIAGSEL", 2: f"DIAG_{ax}"}, x - 4.54, 25.0, 270, "DIAG series")
     BOTTOM.update({f"JP{2 * i + 1}", f"JP{2 * i + 2}", f"JP{5 + i}"})
     # Bulk cap on VS/GND, left of the motor terminal.
     part(f"C{1 + i}", SYM["cp"], "cp63", "100u 35V", {1: "VM", 2: "GND"}, x - 7.2, 7.0, 0)
     # Motor screw terminal A2 A1 B1 B2, centred over power-row pins 3..6, wires out the top edge.
     part(f"J{9 + i}", SYM["conn"](4), "term4", f"MOTOR {ax}",
          seq([f"{ax}_A2", f"{ax}_A1", f"{ax}_B1", f"{ax}_B2"]), x + 1.39, 5.0, 0)
-part("R2", SYM["r"], "r", "1k", {1: "X_DIAGSEL", 2: "DIAG_X"}, 5.0, 14.0, 270, "DIAG series")
-part("R3", SYM["r"], "r", "1k", {1: "Y_DIAGSEL", 2: "DIAG_Y"}, 40.3, 14.0, 270, "DIAG series")
-part("R1", SYM["r"], "r", "1k", {1: "TMC_TX", 2: "TMC_UART"}, 9.0, 14.0, 270, "UART TX")
+    # Blue "motor active" LED under the terminal's B2 end, cathode left; firmware
+    # lights it while the axis moves.
+    part(f"D{2 + i}", SYM["led"], "led5", "blue", {1: "GND", 2: f"{ax}_LED_A"}, x + 15.53, 13.05, 0,
+         f"{ax} motor active")
+# LED series resistors beside their LEDs. LED_X (GPIO32) climbs the gap between the
+# modules; LED_Y (GPIO23, the DevKit's corner pin) leaves right under the antenna
+# keep-out and climbs the open right side.
+part("R5", SYM["r"], "r", "100", {1: "X_LED_A", 2: "LED_X"}, 39.0, 14.2, 0, "LED series")
+part("R6", SYM["r"], "r", "100", {1: "LED_Y", 2: "Y_LED_A"}, 67.4, 23.5, 90, "LED series")
+# TX (GPIO16) feeds the shared PDN_UART line through 1k; RX (GPIO17) sits on it
+# directly. Pads on the gaps right of DevKit pins 6 and 7, where those two rise.
+part("R1", SYM["r"], "r", "1k", {1: "TMC_TX", 2: "TMC_UART"}, DEV_X1 + 5 * 2.54 + 1.27, CHAN_Y, 0, "UART TX")
 # The BTT module pulls EN to GND with 20k, so a floating DRV_EN enables both drivers
 # (ESP32 boot, or the DevKit unplugged). GPIO4 also has a ~45k internal pull-down at
 # reset, and the TMC2209 needs ~0.7*VIO (2.3 V) to read high: 2.2k against 20k||45k
 # gives ~2.85 V, and the ESP32 sinks only 1.5 mA when it drives EN low.
-part("R4", SYM["r"], "r", "2.2k", {1: "DRV_EN", 2: "+3V3"}, 13.0, 14.0, 270, "EN pull-up")
+part("R4", SYM["r"], "r", "2.2k", {1: "+3V3", 2: "DRV_EN"}, 15.0, CHAN_Y, 0, "EN pull-up")
 
 # 12 V entry down the right edge: terminal -> polyfuse -> Schottky -> VM. Joystick bottom right.
 part("J11", SYM["conn"](2), "term2", "12V IN", {1: "VM_IN", 2: "GND"}, 72.0, 14.0, 0)
@@ -172,20 +189,20 @@ part("D1", SYM["d"], "do201", "SR340", {1: "VM", 2: "VM_F"}, 79.5, 27.0, 270, "c
 part("C3", SYM["cp"], "cp10", "470u 25V", {1: "VM", 2: "GND"}, 71.0, 36.0, 270, "input bulk")
 
 
-part("J13", SYM["conn"](5), "hdr5", "JOYSTICK", seq(["GND", "+3V3", "JOY_VRX", "JOY_VRY", "JOY_SW"]), 66.0, 50.0, 90,
+part("J13", SYM["conn"](5), "hdr5", "JOYSTICK", seq(["GND", "+3V3", "JOY_VRX", "JOY_VRY", "JOY_SW"]), 66.0, 54.0, 90,
      "pin header, dupont leads to the joystick module")
-part("C6", SYM["c"], "cdisc", "100n", {1: "JOY_VRX", 2: "GND"}, 66.0, 56.0, 0)
-part("C7", SYM["c"], "cdisc", "100n", {1: "JOY_VRY", 2: "GND"}, 74.0, 56.0, 0)
+part("C6", SYM["c"], "cdisc", "100n", {1: "JOY_VRX", 2: "GND"}, 66.0, 60.0, 0)
+part("C7", SYM["c"], "cdisc", "100n", {1: "JOY_VRY", 2: "GND"}, 74.0, 60.0, 0)
 
 # Spare GPIOs and power as bare pads along the bottom edge, no header fitted.
-SPARE = ["GPIO15", "GPIO2", "GPIO13", "GPIO14", "GPIO27", "GPIO26", "GPIO25", "GPIO32", "GPIO39", "GPIO36",
+SPARE = ["GPIO15", "GPIO2", "GPIO14", "GPIO27", "GPIO26", "GPIO25", "GPIO39", "GPIO36",
          "+3V3", "+3V3", "+3V3", "GND", "GND", "GND"]
-SPARE_NAMES = ["15b", "2b", "13", "14", "27", "26", "25", "32", "39", "36", "3V3", "3V3", "3V3", "GND", "GND", "GND"]
-SPARE_X, SPARE_Y = 10.0, 64.0
-part("J14", SYM["conn"](16), "hdr16", "spare GPIO + power pads", seq(SPARE), SPARE_X, SPARE_Y, 90,
+SPARE_NAMES = ["15b", "2b", "14", "27", "26", "25", "39", "36", "3V3", "3V3", "3V3", "GND", "GND", "GND"]
+SPARE_X, SPARE_Y = 10.0, 68.0
+part("J14", SYM["conn"](len(SPARE)), "hdr14", "spare GPIO + power pads", seq(SPARE), SPARE_X, SPARE_Y, 90,
      "bare pads, solder wires or a header as needed")
 
-HOLES = [(4, 4), (80, 4), (80, 64), (62, 64)]
+HOLES = [(4, 4), (80, 4), (80, 68), (62, 68)]
 
 for i, (x, y) in enumerate(HOLES):
     part(f"H{i + 1}", SYM["hole"], "m3", "M3", {}, x, y, 0)
@@ -231,7 +248,7 @@ def write_schematic(path: Path):
             libs[p.symbol] = extract_symbol(p.symbol)
     out = [f'(kicad_sch (version 20250114) (generator "hyperscope-generate") (generator_version "10.0")',
            f'  (uuid "{root}") (paper "A2")',
-           '  (title_block (title "hyperscope stage carrier") (rev "B") (company "hyperscope")',
+           '  (title_block (title "hyperscope stage carrier") (rev "C") (company "hyperscope")',
            '    (comment 1 "ESP32 HW-394 DevKit + 2x BTT TMC2209, generated by hardware/pcb/generate.py"))',
            "  (lib_symbols"]
     out += ["    " + libs[k].replace("\n", "\n    ") for k in libs]
@@ -420,28 +437,27 @@ def build_pcb(path: Path, route: bool):
     for ax in "XY":
         x = DRV_X[ax]
         rect(x - 1.6, DRV_YP - 1.6, x + 17.78 + 1.6, DRV_YL + 1.6)
-        text(f"TMC2209 {ax}", x + 8.9, 22.4, 1.2)
+        text(f"TMC2209 {ax}", x + 8.9, (DRV_YP + DRV_YL) / 2, 1.2)
         text("VS", x, DRV_YP - 2.6, 0.8)
-        text("GND", x + 17.78, DRV_YP - 2.6, 0.8)
-        text(f"MOTOR {ax}  A2 A1 B1 B2", x + 8.9, 10.9, 0.8)
-        text(f"{ax}: DIAG  MS1 MS2", x + 2.0, 18.2, 0.8, pcbnew.B_SilkS)
-        text("3V3< >GND", x + 3.81, 19.9, 0.8, pcbnew.B_SilkS)  # mirrored: reads correctly from the back
+        text("GND", x + 17.78 + 2.4, DRV_YP, 0.8, rot=90)
+        text(f"MOTOR {ax}  A2 A1 B1 B2", x + 6.5, 10.9, 0.8)
+        text(f"{ax}: DIAG  MS1 MS2", x + 2.0, 20.2, 0.8, pcbnew.B_SilkS)
+        text("3V3< >GND", x + 3.81, 21.3, 0.8, pcbnew.B_SilkS)  # mirrored: reads correctly from the back
     rect(0.6, DEV_YT - 1.3, 51.5, DEV_YB + 1.3)
-    text("ESP32 HW-394   USB-C at left edge", 26.0, 47.5, 0.9)
-    text("antenna", 48.5, 47.5, 0.8, rot=90)
+    text("ESP32 HW-394   USB-C at left edge", 26.0, (DEV_YT + DEV_YB) / 2, 0.9)
+    text("antenna", 48.5, (DEV_YT + DEV_YB) / 2, 0.8, rot=90)
     text("VIN", DEV_X1 - 0.3, DEV_YT - 2.6, 0.8)  # pin 1 markers; the DevKit carries its own pin labels
     text("3V3", DEV_X1 - 3.2, DEV_YB, 0.8)
     for i, nm in enumerate(SPARE_NAMES):
         text(nm, SPARE_X + 2.54 * i, SPARE_Y + 2.6, 0.8, rot=90)
-    text("b=boot", SPARE_X + 2.54 * 16 + 1.0, SPARE_Y + 0.4, 0.8)
+    text("b=boot", SPARE_X + 2.54 * len(SPARE) + 1.0, SPARE_Y + 0.4, 0.8)
     text("12V IN  + -", 74.5, 7.6, 0.9)
     text("hyperscope v1", 66.0, 2.6, 0.9, left=True, width=0.8)
     text("designed by momonala", 66.0, 4.9, 0.8, left=True, width=0.55)
-    text("JOY: GND 3V3 VRX VRY SW", 72.0, 46.3, 0.8)
-    text("hyperscope v1  stage carrier rev B", 26.0, 40.0, 0.9, pcbnew.B_SilkS)
-    text("DIAG jumper: bridge the pad that does NOT pulse during a move (the other is INDEX)",
-         26.0, 47.0, 0.8, pcbnew.B_SilkS)
-    text("Address: X = 00,  Y = MS1 high", 26.0, 44.0, 0.8, pcbnew.B_SilkS)
+    text("JOY: GND 3V3 VRX VRY SW", 72.0, 50.3, 0.8)
+    text("hyperscope v1  stage carrier rev C", 26.0, 44.0, 0.9, pcbnew.B_SilkS)
+    text("DIAG jumper: bridge the pad that does NOT pulse (other = INDEX)", 26.0, 51.0, 0.8, pcbnew.B_SilkS)
+    text("Address: X = 00,  Y = MS1 high", 26.0, 48.0, 0.8, pcbnew.B_SilkS)
 
     board.SetFileName(str(path))
     pcbnew.SaveBoard(str(path), board)
