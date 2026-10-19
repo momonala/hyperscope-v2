@@ -39,22 +39,3 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         fail_ci_if_error: false
-  
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test-and-lint
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Deploy to Raspberry Pi (placeholder)
-      run: |
-        echo "🚀 Deployment placeholder"
-        echo "TODO: SSH into Raspberry Pi and run install script"
-        echo "Required secrets:"
-        echo "  - SSH_PRIVATE_KEY: SSH key for Pi access"
-        echo "  - PI_HOST: Raspberry Pi hostname/IP"
-        echo "  - PI_USER: SSH username"
-        echo "  - PI_PROJECT_PATH: Path to project on Pi"
