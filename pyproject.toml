@@ -6,11 +6,11 @@ authors = [{name = "Mohit Nalavadi"}]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "typer>=0.9.0",
-    "gphoto2>=2.6.3",
-    "rich>=14.3.3",
-    "opencv-python>=4.13.0.92",
-    "numpy>=2.4.3",
+    "typer>=0.27.3",
+    "gphoto2>=2.6.4",
+    "rich>=15.0.0",
+    "opencv-python>=5.0.0.93",
+    "numpy>=2.5.4",
     "pyserial>=3.5",
 ]
 
@@ -20,15 +20,15 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0.0",
-    "pytest-cov>=4.0.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
     "black",
-    "ruff>=0.14.10",
-    "isort>=7.0.0",
+    "ruff>=0.17.0",
+    "isort>=9.0.2",
     "vulture>=2.16",
     "jupyter>=1.1.1",
-    "notebook>=7.5.1",
-    "pandas>=2.3.3",
+    "notebook>=7.6.3",
+    "pandas>=3.0.6",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -70,3 +70,4 @@ exclude_lines = [
 
 [tool.uv]
 exclude-newer = "1 week"
+exclude-newer-package = { certifi = false }
