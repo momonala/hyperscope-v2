@@ -78,7 +78,7 @@ def capture_and_save_image(camera: gp.Camera, save_dir: Path, shot_number: int) 
     camera_file = camera.file_get(file_path.folder, file_path.name, gp.GP_FILE_TYPE_NORMAL)
 
     now = datetime.now(timezone.utc).astimezone()
-    filename = save_dir / f"{now.strftime('%Y%m%d')}_{now.strftime('%H%M%S')}_{shot_number:04d}.jpg"
+    filename = save_dir / f"{now:%Y%m%d_%H%M%S}_{shot_number:04d}.jpg"
     camera_file.save(str(filename))
 
     logger.info("[shot %d] Saved: %s", shot_number, filename)
@@ -101,8 +101,7 @@ def run_timelapse(interval_seconds: float = SHOOT_INTERVAL_SECONDS, save_dir: Pa
         save_dir: Directory to save images. Defaults to MEDIA_DIR/<date>.
     """
     if save_dir is None:
-        date_str = datetime.now(timezone.utc).astimezone().strftime("%Y%m%d")
-        save_dir = MEDIA_DIR / date_str
+        save_dir = MEDIA_DIR / f"{datetime.now(timezone.utc).astimezone():%Y%m%d}"
     save_dir.mkdir(parents=True, exist_ok=True)
 
     logger.info("Saving to: %s", save_dir)

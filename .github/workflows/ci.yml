@@ -26,13 +26,13 @@ jobs:
       run: uv sync
     
     - name: Run tests with coverage
-      run: uv run pytest
+      run: uv run --with pytest --with pytest-cov pytest
     
     - name: Check formatting with black
-      run: uv run black . --check
+      run: uvx black . --check
     
     - name: Run ruff linting
-      run: uv run ruff check .
+      run: uvx ruff check .
     
     - name: Upload coverage to Codecov
       if: always()

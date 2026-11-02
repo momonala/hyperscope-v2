@@ -35,20 +35,22 @@ uv run python src/flat_field_correction.py \
 
 `--flat` and `--raw` repeat, to average several flats or batch several raws. Output goes to `data/output/` unless `--output` says otherwise.
 
-**Drive the stage** — needs `arduino-cli` with the `esp32:esp32` core plus the `TMCStepper` and `FastAccelStepper` libraries:
+**Drive the stage** — flash the ESP32 once, then drive it from the host. With 12 V on, run the jog tool, move with the arrows, press `z` to make that spot home (0, 0), and `h` to return to it. There are no soft limits, so keep clear of the stops. The keys are listed on screen.
 
 ```bash
+arduino-cli core install esp32:esp32
+arduino-cli lib install TMCStepper FastAccelStepper
 arduino-cli compile --fqbn esp32:esp32:esp32 firmware/hyperscope_stage
 arduino-cli upload  --fqbn "esp32:esp32:esp32:UploadSpeed=115200" -p /dev/cu.usbserial-XXXX firmware/hyperscope_stage
 arduino-cli monitor -p /dev/cu.usbserial-XXXX -c baudrate=115200
 ```
 
-Then talk to it from the host. `status` resets the board and prints its boot banner, which is how you confirm the driver answered:
+`status` resets the board and prints its boot banner, which is how you confirm both drivers answered:
 
 ```bash
-uv run python src/stage.py status
-uv run python src/stage.py send "MOVE X3200"   # one knob revolution
-uv run python src/stage.py jog                  # tap arrows to step, hold to run
+uv run python src/stage_control.py status
+uv run python src/stage_control.py send "MOVE X3200"   # one knob revolution
+uv run python src/stage_control.py jog                  # arrows step/run, z zero, h go home, f fast
 ```
 
 The driver only answers once its 12 V supply is on. If the banner says `driver not responding`, see [`docs/hardware.md`](docs/hardware.md).
@@ -61,7 +63,7 @@ Capture, correction, and the stage are three independent programs, joined only b
 
 **Correction.** `flat_field_correction.py` computes `(raw - dark) / (flat - dark)` per pixel and renormalizes each channel to mid-grey by its median, removing vignetting and sensor non-uniformity. It crops the outer 200 px first: the sensor corners fall outside the optical circle, where near-zero flat values would blow up the ratio.
 
-**Stage.** An ESP32 drives two TMC2209 drivers in UART mode, which set current and microstepping in software rather than by trimpot. Positions are in microsteps, 3200 per knob revolution at 16 microsteps. Wiring, pin map, serial protocol, and the bring-up checklist are in [`docs/hardware.md`](docs/hardware.md).
+**Stage.** An ESP32 drives two TMC2209 drivers in UART mode, which set current and microstepping in software rather than by trimpot. Positions are in microsteps, 3200 per knob revolution at 16 microsteps; +X is right and +Y is up. After a reset the board does not know where the stage is, so it boots with the motors off and homing finds the top-left corner by running each axis into its hard stop until the driver's StallGuard load sensing reports a stall. Wiring, pin map, serial protocol, and the bring-up checklist are in [`docs/hardware.md`](docs/hardware.md).
 
 ## Configuration
 
@@ -69,7 +71,8 @@ Capture, correction, and the stage are three independent programs, joined only b
 |------|-------|
 | Shot interval, media directory | `SHOOT_INTERVAL_SECONDS` and `MEDIA_DIR` in `src/camera_control.py` |
 | Correction kernel, edge crop | Module constants in `src/flat_field_correction.py` |
-| Stage pins, current, speeds | `firmware/hyperscope_stage/config.h` |
+| Stage pins, current, speeds, directions, homing, boot defaults | `firmware/hyperscope_stage/config.h` |
+| Jog keys, speeds, homing direction | Module constants in `src/stage_control.py` |
 
 Camera widget names and values are Nikon-specific. Check yours before trusting the enums in `src/camera_settings.py`:
 
@@ -84,7 +87,7 @@ src/
 ├── camera_control.py         # gPhoto2 timelapse capture loop
 ├── camera_settings.py        # StrEnums for gPhoto2 config values (Nikon)
 ├── flat_field_correction.py  # Typer CLI: dark/flat calibration pipeline
-└── stage.py                  # Serial client for the stage controller
+└── stage_control.py                  # Serial client for the stage controller
 firmware/hyperscope_stage/    # ESP32 + TMC2209 stage controller (Arduino)
 docs/
 ├── hardware.md               # BOM, wiring, pin map, serial protocol, bring-up
@@ -102,14 +105,18 @@ data/                         # Gitignored
 - **Three programs, joined by files.** Capture, correction, and the stage share nothing but `data/`. Each can be run, tested, and replaced alone, at the cost of no coordination between shots and moves yet.
 - **A separate microcontroller for the stage.** Step timing needs microsecond accuracy that a Linux host cannot promise, so an ESP32 generates steps and the host only sends commands over serial. Arduino rather than PlatformIO or MicroPython because the two driver libraries are Arduino-native.
 - **TMC2209 in UART mode.** Current, microstepping, and chopper mode are set from `config.h` instead of a trimpot and solder jumpers, and the firmware can read the driver back to detect a reset. The cost is one shared single-wire bus that every driver must be addressed on correctly.
-- **Rated current, StealthChop, 47 kHz PWM.** The knobs bind at spots, so the motors run at their rated 1 A RMS; 25 % hold keeps the drivers cool, the supply within a 2 A limit, and the motors silent at rest. The default 35 kHz PWM produced an audible whirr at standstill.
+- **800 mA, StealthChop, 47 kHz PWM.** Below the motors' ~1 A rating: enough for the lubricated stage, and a gentler hit when homing runs into a stop. 25 % hold keeps the drivers cool and the motors silent at rest. The default 35 kHz PWM produced an audible whirr at standstill.
+- **Safe boot.** A reset leaves the motors unpowered and the joystick off. An unplugged joystick input reads noise, and with the motors live that noise once drove an axis into its stop.
+- **Stall homing instead of limit switches.** StallGuard reads motor load over the existing UART, so no extra wiring. The cost is a tuned threshold and a brief push against each hard stop.
+- **Axis names follow the stage, not the PCB.** The board's "Y" socket drives stage X; `config.h` swaps the pins and addresses so the wiring could stay as built.
 - **Capture to the camera's RAM.** Writing to the card between shots was the bottleneck for continuous shooting. Frames are pulled over USB instead, so a dropped USB link loses the shot.
 - **Positions in microsteps.** Nothing has measured the knob pitch yet, so the firmware stays in its native unit rather than guessing a conversion.
 
 ## Limitations
 
 - **Stage units are microsteps, not microns.** Converting needs the knob pitch per revolution, which is unmeasured.
-- **No homing or limits.** Nothing knows where the stage ends. The driver's DIAG pins are snipped, so a future stall-based end stop has to read StallGuard over the UART.
-- **Capture and stage do not talk.** `src/stage.py` drives the stage by hand, but nothing moves it between shots during a timelapse.
+- **Homing threshold is untuned.** `STALL_THRESHOLD_DEFAULT` in `config.h` came from readings taken before the stage was lubricated. Keep a hand on the 12 V switch on the first homing runs.
+- **Soft limits are off.** The travel per axis is unmeasured, so `LIMITS_ENABLED_AT_BOOT` is false and nothing stops a held arrow before the hard stop.
+- **Capture and stage do not talk.** `src/stage_control.py` drives the stage by hand, but nothing moves it between shots during a timelapse.
 
-_Last updated: 2026-09-20_
+_Last updated: 2026-10-17_
