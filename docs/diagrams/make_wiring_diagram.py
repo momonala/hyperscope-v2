@@ -1,7 +1,7 @@
 """Generate the XY stage wiring diagram as SVG.
 
 Run:  uv run python docs/diagrams/make_wiring_diagram.py
-Pin assignments mirror firmware/hyperscope_stage/config.h.
+Shows the original hand-wired build; the carrier PCB (hardware/pcb/) supersedes it.
 
 Layout rule that keeps the wires untangled: driver signals come off the ESP32's
 right-hand column and joystick signals off its left-hand column, each in the

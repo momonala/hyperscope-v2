@@ -27,9 +27,3 @@ class CaptureMode(StrEnum):
 class CaptureTarget(StrEnum):
     RAM = "Internal RAM"
     MEMORY_CARD = "Memory card"
-
-
-class ImageFormat(StrEnum):
-    JPEG = "JPEG"
-    RAW = "RAW"
-    RAW_JPEG = "RAW+JPEG"

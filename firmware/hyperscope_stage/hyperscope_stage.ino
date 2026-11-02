@@ -16,25 +16,33 @@ struct Axis {
   const char* name;
   uint8_t stepPin;
   uint8_t dirPin;
+  bool dirInvert;
   uint8_t ledPin;
   uint8_t joyPin;
   bool joyInvert;
+  uint16_t currentMa;
+  long homeMaxSteps;
   TMC2209Stepper driver;
   FastAccelStepper* stepper = nullptr;
   bool present = false;
   int joyCentre = JOY_ADC_MAX / 2;
+  bool zeroed = false;  // position means nothing until ZERO or HOME after a reset
+  long minPos = -SOFT_LIMIT_DEFAULT;
+  long maxPos = SOFT_LIMIT_DEFAULT;
+  uint8_t stallThreshold = STALL_THRESHOLD_DEFAULT;
 };
 
 constexpr size_t AXIS_COUNT = 2;
 Axis axes[AXIS_COUNT] = {
-    {"X", PIN_X_STEP, PIN_X_DIR, PIN_X_LED, PIN_JOY_X, JOY_INVERT_X, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_X)},
-    {"Y", PIN_Y_STEP, PIN_Y_DIR, PIN_Y_LED, PIN_JOY_Y, JOY_INVERT_Y, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_Y)},
+    {"X", PIN_X_STEP, PIN_X_DIR, DIR_INVERT_X, PIN_X_LED, PIN_JOY_X, JOY_INVERT_X, MOTOR_RMS_CURRENT_X_MA, HOME_MAX_STEPS_X, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_X)},
+    {"Y", PIN_Y_STEP, PIN_Y_DIR, DIR_INVERT_Y, PIN_Y_LED, PIN_JOY_Y, JOY_INVERT_Y, MOTOR_RMS_CURRENT_Y_MA, HOME_MAX_STEPS_Y, TMC2209Stepper(&Serial2, TMC_R_SENSE, TMC_ADDR_Y)},
 };
 
 FastAccelStepperEngine engine;
 bool driversEnabled = false;
-bool joystickEnabled = true;
+bool joystickEnabled = JOYSTICK_ENABLED_AT_BOOT;
 bool jogFine = false;
+bool limitsEnabled = LIMITS_ENABLED_AT_BOOT;
 uint32_t speedHz = DEFAULT_SPEED_HZ;
 uint32_t accel = DEFAULT_ACCEL;
 String lineBuffer;
@@ -67,14 +75,16 @@ void configureDriver(Axis& axis) {
   driver.mstep_reg_select(true);  // microsteps from the register, MS pins are the address
   driver.toff(5);
   driver.blank_time(24);
-  driver.rms_current(MOTOR_RMS_CURRENT_MA, MOTOR_HOLD_FRACTION);
+  driver.rms_current(axis.currentMa, MOTOR_HOLD_FRACTION);
   driver.microsteps(MICROSTEPS);
-  driver.en_spreadCycle(false);  // StealthChop: silent, and a knob needs little torque
+  driver.en_spreadCycle(false);  // StealthChop
   driver.pwm_autoscale(true);
   driver.pwm_autograd(true);
   driver.pwm_freq(STEALTHCHOP_PWM_FREQ);
   driver.iholddelay(10);
   driver.TPOWERDOWN(20);
+  driver.TCOOLTHRS(0xFFFFF);  // StallGuard reports at every speed; CoolStep stays off with semin = 0
+  driver.SGTHRS(axis.stallThreshold);
 
   axis.present = driver.test_connection() == 0;
   if (!axis.present) {
@@ -136,13 +146,15 @@ void waitForMotion() {
   updateMotorLeds();
 }
 
-// Reads microsteps and current back from each driver: they fall back to the
-// MS-pin and Vref defaults if the driver browns out and loses its registers.
 void printStatus() {
   Serial.printf("pos X%ld Y%ld moving:%d en:%d joy:%d fine:%d speed:%lu accel:%lu",
                 (long)axes[0].stepper->getCurrentPosition(), (long)axes[1].stepper->getCurrentPosition(),
                 anyRunning(), driversEnabled, joystickEnabled, jogFine, (unsigned long)speedHz,
                 (unsigned long)accel);
+  Serial.printf(" limits:%d", limitsEnabled);
+  for (Axis& axis : axes) {
+    Serial.printf(" %s:%s[%ld..%ld]", axis.name, axis.zeroed ? "zeroed" : "unzeroed", axis.minPos, axis.maxPos);
+  }
   for (Axis& axis : axes) {
     if (axis.present) Serial.printf(" drv%s:%u/%umA", axis.name, axis.driver.microsteps(), axis.driver.rms_current());
   }
@@ -178,9 +190,10 @@ int32_t joystickAxisSpeed(const Axis& axis, int raw) {
   return (delta > 0) == axis.joyInvert ? -hz : hz;
 }
 
-// Serial moves re-apply their own speed and acceleration, so the jog limits set
-// here need no undoing.
-void jogAxis(FastAccelStepper* stepper, int32_t hz) {
+// With limits on, a jog is a move to the limit in that direction, so it
+// decelerates into the limit instead of overshooting it.
+void jogAxis(Axis& axis, int32_t hz) {
+  FastAccelStepper* stepper = axis.stepper;
   stepper->setAcceleration(JOG_ACCEL);
   if (hz == 0) {
     stepper->applySpeedAcceleration();
@@ -188,7 +201,11 @@ void jogAxis(FastAccelStepper* stepper, int32_t hz) {
     return;
   }
   stepper->setSpeedInHz((uint32_t)abs(hz));
-  hz > 0 ? stepper->runForward() : stepper->runBackward();
+  if (limitsEnabled) {
+    stepper->moveTo(hz > 0 ? axis.maxPos : axis.minPos);
+  } else {
+    hz > 0 ? stepper->runForward() : stepper->runBackward();
+  }
 }
 
 void pollJoystickButton(uint32_t now) {
@@ -218,7 +235,8 @@ void pollJoystick() {
   int32_t hz[AXIS_COUNT];
   bool deflected = false;
   for (size_t a = 0; a < AXIS_COUNT; a++) {
-    hz[a] = axes[a].present ? joystickAxisSpeed(axes[a], analogRead(axes[a].joyPin)) : 0;
+    bool usable = axes[a].present && (axes[a].zeroed || !limitsEnabled);
+    hz[a] = usable ? joystickAxisSpeed(axes[a], analogRead(axes[a].joyPin)) : 0;
     deflected |= hz[a] != 0;
   }
 
@@ -229,7 +247,9 @@ void pollJoystick() {
   } else {
     jogging = false;
   }
-  for (size_t a = 0; a < AXIS_COUNT; a++) jogAxis(axes[a].stepper, hz[a]);
+  for (size_t a = 0; a < AXIS_COUNT; a++) {
+    if (axes[a].present) jogAxis(axes[a], hz[a]);
+  }
 }
 
 // --- Commands ------------------------------------------------------------------
@@ -286,45 +306,66 @@ bool requireDriversEnabled() {
   return false;
 }
 
-bool requireAxis(const Axis& axis) {
+// Prints the usage line on a malformed argument list.
+bool parseAxesOrUsage(const String& args, const char* usage, AxisTargets& targets) {
+  if (parseAxes(args, targets)) return true;
+  Serial.printf("err usage: %s\n", usage);
+  return false;
+}
+
+bool requirePresent(const Axis& axis) {
   if (axis.present) return true;
   Serial.printf("err %s axis unavailable, its driver did not respond\n", axis.name);
   return false;
 }
 
-bool commandMove(const String& args, bool absolute) {
-  AxisTargets targets;
-  if (!parseAxes(args, targets)) {
-    Serial.println("err usage: MOVE X<n> Y<n>");
+bool requireAxis(const Axis& axis) {
+  if (!requirePresent(axis)) return false;
+  if (limitsEnabled && !axis.zeroed) {
+    Serial.printf("err %s not zeroed, send ZERO or HOME (or LIMITS 0 to measure travel)\n", axis.name);
     return false;
   }
+  return true;
+}
+
+// Drivers on, and every named axis present and zeroed.
+bool requireMovable(const AxisTargets& targets) {
   if (!requireDriversEnabled()) return false;
   for (size_t a = 0; a < AXIS_COUNT; a++) {
     if (targets.has[a] && !requireAxis(axes[a])) return false;
   }
+  return true;
+}
+
+long clampToLimits(Axis& axis, long target) {
+  if (!limitsEnabled) return target;
+  long clamped = constrain(target, axis.minPos, axis.maxPos);
+  if (clamped != target) Serial.printf("# %s target %ld clamped to %ld\n", axis.name, target, clamped);
+  return clamped;
+}
+
+bool commandMove(const String& args, bool absolute) {
+  AxisTargets targets;
+  if (!parseAxesOrUsage(args, absolute ? "GOTO X<n> Y<n>" : "MOVE X<n> Y<n>", targets)) return false;
+  if (!requireMovable(targets)) return false;
 
   applyMotionLimits();
   for (size_t a = 0; a < AXIS_COUNT; a++) {
     if (!targets.has[a]) continue;
-    absolute ? axes[a].stepper->moveTo(targets.value[a]) : axes[a].stepper->move(targets.value[a]);
+    long target = targets.value[a] + (absolute ? 0 : axes[a].stepper->getCurrentPosition());
+    axes[a].stepper->moveTo(clampToLimits(axes[a], target));
   }
   return true;
 }
 
 // JOG X<hz> Y<hz>: run each named axis at a signed velocity until told
-// otherwise; 0 decelerates that axis to a stop. Lets a host act as a switch.
+// otherwise; 0 decelerates that axis to a stop.
 bool commandJog(const String& args) {
   AxisTargets targets;
-  if (!parseAxes(args, targets)) {
-    Serial.println("err usage: JOG X<hz> Y<hz>");
-    return false;
-  }
-  if (!requireDriversEnabled()) return false;
+  if (!parseAxesOrUsage(args, "JOG X<hz> Y<hz>", targets)) return false;
+  if (!requireMovable(targets)) return false;
   for (size_t a = 0; a < AXIS_COUNT; a++) {
-    if (targets.has[a] && !requireAxis(axes[a])) return false;
-  }
-  for (size_t a = 0; a < AXIS_COUNT; a++) {
-    if (targets.has[a]) jogAxis(axes[a].stepper, targets.value[a]);
+    if (targets.has[a]) jogAxis(axes[a], targets.value[a]);
   }
   return true;
 }
@@ -400,6 +441,125 @@ bool commandDirectionTest(const String& args) {
   return true;
 }
 
+// MIN X<n> Y<n> / MAX X<n> Y<n>: soft limits in microsteps from zero.
+bool commandLimit(const String& args, bool isMax) {
+  AxisTargets targets;
+  if (!parseAxesOrUsage(args, isMax ? "MAX X<n> Y<n>" : "MIN X<n> Y<n>", targets)) return false;
+  for (size_t a = 0; a < AXIS_COUNT; a++) {
+    if (!targets.has[a]) continue;
+    long& bound = isMax ? axes[a].maxPos : axes[a].minPos;
+    bound = targets.value[a];
+  }
+  return true;
+}
+
+// Run an axis until StallGuard reports a stall, an abort byte arrives, or the
+// target is reached. Returns true on a stall. In StealthChop the driver flags a
+// stall when SG_RESULT drops to twice SGTHRS.
+bool runUntilStall(Axis& axis, long target, uint32_t hz) {
+  axis.stepper->setSpeedInHz(hz);
+  axis.stepper->setAcceleration(accel);
+  axis.stepper->moveTo(target);
+  uint32_t started = millis();
+  while (axis.stepper->isRunning()) {
+    updateMotorLeds();
+    if (Serial.available()) {
+      stopImmediately();
+      Serial.println("# aborted");
+      return false;
+    }
+    if (millis() - started < STALL_IGNORE_MS) continue;
+    if (axis.driver.SG_RESULT() <= 2u * axis.stallThreshold) {
+      stopImmediately();
+      return true;
+    }
+    delay(STALL_POLL_MS);
+  }
+  return false;
+}
+
+// SGTEST X<hz>: run briefly and print SG_RESULT, to choose a stall threshold.
+bool commandStallTest(const String& args) {
+  AxisTargets targets;
+  if (!parseAxesOrUsage(args, "SGTEST X<hz> or Y<hz>, signed", targets)) return false;
+  if (!requireMovable(targets)) return false;
+  for (size_t a = 0; a < AXIS_COUNT; a++) {
+    if (!targets.has[a]) continue;
+    Axis& axis = axes[a];
+    long hz = targets.value[a];
+    long steps = hz * (long)SGTEST_DURATION_MS / 1000;
+    axis.stepper->setSpeedInHz((uint32_t)abs(hz));
+    axis.stepper->setAcceleration(accel);
+    axis.stepper->moveTo(clampToLimits(axis, axis.stepper->getCurrentPosition() + steps));
+    uint32_t started = millis();
+    uint16_t lo = 0xFFFF, hi = 0;
+    uint32_t sum = 0, n = 0;
+    while (axis.stepper->isRunning()) {
+      updateMotorLeds();
+      if (millis() - started >= STALL_IGNORE_MS) {
+        uint16_t sg = axis.driver.SG_RESULT();
+        lo = min(lo, sg);
+        hi = max(hi, sg);
+        sum += sg;
+        n++;
+      }
+      delay(STALL_POLL_MS);
+    }
+    updateMotorLeds();
+    if (n == 0) {
+      Serial.println("# move too short to sample, raise the speed");
+    } else {
+      Serial.printf("sgtest %s %ldHz: SG_RESULT min:%u avg:%lu max:%u  (stall when <= 2 x SGT, now %u)\n", axis.name,
+                    hz, lo, (unsigned long)(sum / n), hi, axis.stallThreshold);
+    }
+  }
+  return true;
+}
+
+// SGT X<n> Y<n>: stall threshold 0..255; higher is more sensitive.
+bool commandStallThreshold(const String& args) {
+  AxisTargets targets;
+  if (!parseAxesOrUsage(args, "SGT X<0..255> Y<0..255>", targets)) return false;
+  for (size_t a = 0; a < AXIS_COUNT; a++) {
+    if (!targets.has[a]) continue;
+    axes[a].stallThreshold = (uint8_t)constrain(targets.value[a], 0L, 255L);
+    if (axes[a].present) axes[a].driver.SGTHRS(axes[a].stallThreshold);
+  }
+  return true;
+}
+
+// HOME X-<hz>: run toward the stop on that side until it stalls, call that
+// position zero, then back off. The sign picks the side.
+bool commandHome(const String& args) {
+  AxisTargets targets;
+  if (!parseAxesOrUsage(args, "HOME X<hz> or Y<hz>, signed toward the stop", targets)) return false;
+  if (!requireDriversEnabled()) return false;
+  for (size_t a = 0; a < AXIS_COUNT; a++) {
+    if (!targets.has[a]) continue;
+    Axis& axis = axes[a];
+    if (!requirePresent(axis)) return false;
+    long hz = targets.value[a];
+    if (hz == 0) {
+      Serial.println("err home speed must be non-zero");
+      return false;
+    }
+    long direction = hz > 0 ? 1 : -1;
+    long start = axis.stepper->getCurrentPosition();
+    if (!runUntilStall(axis, start + direction * axis.homeMaxSteps, (uint32_t)abs(hz))) {
+      Serial.printf("err %s no stall within %ld steps, nothing zeroed\n", axis.name, axis.homeMaxSteps);
+      applyMotionLimits();
+      return false;
+    }
+    Serial.printf("# %s stalled after %ld steps\n", axis.name, labs(axis.stepper->getCurrentPosition() - start));
+    axis.stepper->setCurrentPosition(0);
+    axis.zeroed = true;
+    applyMotionLimits();
+    axis.stepper->moveTo(-direction * HOME_BACKOFF_STEPS);
+    waitForMotion();
+  }
+  return true;
+}
+
 bool dispatchCommand(const String& command, const String& args) {
   if (command == "?") {
     printStatus();
@@ -409,9 +569,17 @@ bool dispatchCommand(const String& command, const String& args) {
   if (command == "GOTO") return commandMove(args, true);
   if (command == "JOG") return commandJog(args);
   if (command == "ZERO") {
-    for (Axis& axis : axes) axis.stepper->setCurrentPosition(0);
+    for (Axis& axis : axes) {
+      axis.stepper->setCurrentPosition(0);
+      axis.zeroed = true;
+    }
     return true;
   }
+  if (command == "MIN" || command == "MAX") return commandLimit(args, command == "MAX");
+  if (command == "LIMITS") return readFlag(args, "LIMITS <0|1>", limitsEnabled);
+  if (command == "SGTEST") return commandStallTest(args);
+  if (command == "SGT") return commandStallThreshold(args);
+  if (command == "HOME") return commandHome(args);
   if (command == "STOP") {
     decelerateToStop();
     return true;
@@ -496,7 +664,7 @@ void configureSteppers() {
       Serial.printf("err could not allocate the %s stepper, check its STEP pin\n", axis.name);
       while (true) delay(1000);
     }
-    axis.stepper->setDirectionPin(axis.dirPin);
+    axis.stepper->setDirectionPin(axis.dirPin, !axis.dirInvert);
   }
   applyMotionLimits();
 }
@@ -523,7 +691,7 @@ void setup() {
   } else if (ENABLE_DRIVERS_AT_BOOT) {
     delay(DRIVER_ENABLE_SETTLE_MS);
     setDriversEnabled(true);
-    Serial.println("# drivers enabled, joystick active. Send ? for status.");
+    Serial.printf("# drivers enabled, joystick %s. Send ? for status.\n", joystickEnabled ? "active" : "off");
   } else {
     Serial.println("# ready, send EN 1 to energise the motors");
   }

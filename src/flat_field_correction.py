@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 FLAT_BLUR_KERNEL = 51
 EPS = 1e-6
 EDGE_CROP_PX = 200
+MID_GREY = 128.0
 
 app = typer.Typer(help="Flat-field correction for microscopy images.")
 
@@ -75,7 +76,7 @@ def correct(raw: np.ndarray, flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
 
     ratio = raw_corrected / flat_corrected
     channel_median = np.median(ratio, axis=(0, 1), keepdims=True) + EPS
-    return ratio / channel_median * 128.0
+    return ratio / channel_median * MID_GREY
 
 
 def stretch_contrast(image: np.ndarray) -> np.ndarray:

@@ -51,9 +51,9 @@ Top view, USB-C out of the left edge, motor wires out of the top edge:
   DIAG jumper. All resistors are standing, 2.54 mm pitch.
 - **Motor LEDs** D2/D3, blue, under each terminal's B2 end, driven from GPIO 32 (X) and
   GPIO 23 (Y) through R5/R6; firmware lights each while its axis moves.
-- **Back, under each module:** MS1 and MS2 address jumpers (GND left pad, 3V3 right pad in
-  top view) and the DIAG-select jumper. All ship open; bridge the address jumpers before
-  first power-up. Intended addresses: X = 00, Y = MS1 high.
+- **Back, under each module:** MS1 and MS2 address jumpers (GND right pad, 3V3 left pad in
+  top view; the back-side footprint is mirrored, so from the back GND is the left pad) and the DIAG-select jumper. All ship open; bridge the address jumpers before
+  first power-up. Addresses: X = 3 (both 3V3), Y = 2 (MS1 GND, MS2 3V3).
 - **12 V** enters top right: screw terminal, 3 A polyfuse, series Schottky (SR340) for
   reverse polarity, 470 µF bulk. VIN on the DevKit is unconnected; logic runs from USB.
 - **Joystick** 1x5 pin header bottom right (GND, 3V3, VRX, VRY, SW) with 100 nF on each axis.
