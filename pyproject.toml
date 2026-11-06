@@ -22,9 +22,6 @@ build-backend = "hatchling.build"
 dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
-    "black",
-    "ruff>=0.17.0",
-    "isort>=9.0.2",
     "vulture>=2.16",
     "jupyter>=1.1.1",
     "notebook>=7.6.3",
@@ -34,21 +31,12 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["."]
 
-[tool.black]
-line-length = 110
-target-version = ['py312']
-include = '\.pyi?$'
-extend-exclude = 'docs/'
-
 [tool.mypy]
 python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
-
-[tool.isort]
-force_single_line = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -71,3 +59,14 @@ exclude_lines = [
 [tool.uv]
 exclude-newer = "1 week"
 exclude-newer-package = { certifi = false }
+
+[tool.ruff]
+line-length = 110
+extend-exclude = ["docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF100", "PLW1510"]
+ignore = ["E501", "B008", "UP042"]
+
+[tool.ruff.lint.isort]
+force-single-line = true

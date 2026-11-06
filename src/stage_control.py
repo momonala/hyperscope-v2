@@ -41,16 +41,12 @@ def find_port() -> str:
         RuntimeError: If no USB serial port is present, or several are.
     """
     candidates = [
-        p.device
-        for p in list_ports.comports()
-        if "usbserial" in p.device or "usbmodem" in p.device
+        p.device for p in list_ports.comports() if "usbserial" in p.device or "usbmodem" in p.device
     ]
     if not candidates:
         raise RuntimeError("No USB serial port found. Is the ESP32 plugged in?")
     if len(candidates) > 1:
-        raise RuntimeError(
-            f"Several USB serial ports found, pass --port: {', '.join(candidates)}"
-        )
+        raise RuntimeError(f"Several USB serial ports found, pass --port: {', '.join(candidates)}")
     return candidates[0]
 
 
@@ -83,9 +79,7 @@ def read_reply(connection: serial.Serial) -> list[str]:
         lines.append(line)
         if line == "ok" or line.startswith("err"):
             return lines
-    raise TimeoutError(
-        f"No reply terminator within {REPLY_TIMEOUT_S:.0f}s; got {lines}"
-    )
+    raise TimeoutError(f"No reply terminator within {REPLY_TIMEOUT_S:.0f}s; got {lines}")
 
 
 def send_command(connection: serial.Serial, command: str) -> list[str]:
@@ -161,9 +155,7 @@ class Jogger:
 
     ARROWS = {"UP": ("Y", 1), "DOWN": ("Y", -1), "RIGHT": ("X", 1), "LEFT": ("X", -1)}
 
-    def __init__(
-        self, connection: serial.Serial, step: int, speed: int, release_s: float
-    ) -> None:
+    def __init__(self, connection: serial.Serial, step: int, speed: int, release_s: float) -> None:
         self.connection = connection
         self.step = step
         self.speed = speed
@@ -191,10 +183,7 @@ class Jogger:
 
     def press_arrow(self, axis: str, direction: int) -> None:
         now = time.monotonic()
-        is_repeat = (
-            self.last_arrow == (axis, direction)
-            and now - self.last_arrow_at < self.release_s
-        )
+        is_repeat = self.last_arrow == (axis, direction) and now - self.last_arrow_at < self.release_s
         self.last_arrow, self.last_arrow_at = (axis, direction), now
         if not is_repeat:
             self.send(f"MOVE {axis}{direction * self.step}")
@@ -210,9 +199,7 @@ class Jogger:
 
     def scale_motion(self, factor: float) -> None:
         self.step = int(min(max(self.step * factor, JOG_STEP_MIN), JOG_STEP_MAX))
-        self.speed = int(
-            min(max(self.speed * factor, JOG_SPEED_MIN_HZ), JOG_SPEED_MAX_HZ)
-        )
+        self.speed = int(min(max(self.speed * factor, JOG_SPEED_MIN_HZ), JOG_SPEED_MAX_HZ))
 
     def tick(self) -> None:
         """Stop a held axis once repeats stop, and refresh the position readout."""
@@ -244,12 +231,8 @@ class Jogger:
 
 @app.command()
 def jog(
-    step: int = typer.Option(
-        JOG_STEP_DEFAULT, help="Microsteps per tap (3200 per knob turn)"
-    ),
-    speed: int = typer.Option(
-        JOG_SPEED_DEFAULT_HZ, help="Microsteps/s while holding a key"
-    ),
+    step: int = typer.Option(JOG_STEP_DEFAULT, help="Microsteps per tap (3200 per knob turn)"),
+    speed: int = typer.Option(JOG_SPEED_DEFAULT_HZ, help="Microsteps/s while holding a key"),
     release_s: float = typer.Option(
         0.5,
         help="Seconds without key repeats before a held axis stops. Raise if the stage stutters while holding",

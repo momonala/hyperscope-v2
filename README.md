@@ -11,7 +11,7 @@ Microscope photography rig: a DSLR shoots timelapses over USB, two steppers driv
 git clone https://github.com/momonala/hyperscope-v2.git
 cd hyperscope-v2
 uv sync
-./test-and-lint.sh   # pytest, black, ruff
+./test-and-lint.sh   # pytest, ruff format, ruff check
 ```
 
 Needs Python 3.12+, [uv](https://github.com/astral-sh/uv), and `brew install gphoto2` for camera control.

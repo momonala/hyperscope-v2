@@ -3,8 +3,8 @@
 import logging
 import subprocess
 import time
+from datetime import UTC
 from datetime import datetime
-from datetime import timezone
 from pathlib import Path
 
 import gphoto2 as gp
@@ -24,7 +24,7 @@ MEDIA_DIR = Path(__file__).parent.parent / "data" / "media"
 def kill_macos_camera_drivers() -> None:
     """Kill macOS PTP camera drivers to release exclusive camera access."""
     for process in ("PTPCamera", "imagecaptured"):
-        result = subprocess.run(["pkill", "-f", process], capture_output=True)
+        result = subprocess.run(["pkill", "-f", process], check=False, capture_output=True)
         if result.returncode == 0:
             logger.info("Killed process: %s", process)
     time.sleep(1)
@@ -77,7 +77,7 @@ def capture_and_save_image(camera: gp.Camera, save_dir: Path, shot_number: int) 
     file_path = camera.capture(gp.GP_CAPTURE_IMAGE)
     camera_file = camera.file_get(file_path.folder, file_path.name, gp.GP_FILE_TYPE_NORMAL)
 
-    now = datetime.now(timezone.utc).astimezone()
+    now = datetime.now(UTC).astimezone()
     filename = save_dir / f"{now.strftime('%Y%m%d')}_{now.strftime('%H%M%S')}_{shot_number:04d}.jpg"
     camera_file.save(str(filename))
 
@@ -101,7 +101,7 @@ def run_timelapse(interval_seconds: float = SHOOT_INTERVAL_SECONDS, save_dir: Pa
         save_dir: Directory to save images. Defaults to MEDIA_DIR/<date>.
     """
     if save_dir is None:
-        date_str = datetime.now(timezone.utc).astimezone().strftime("%Y%m%d")
+        date_str = datetime.now(UTC).astimezone().strftime("%Y%m%d")
         save_dir = MEDIA_DIR / date_str
     save_dir.mkdir(parents=True, exist_ok=True)
 
